@@ -1,20 +1,73 @@
 import React from "react";
-import img_1 from '../img/foto_prueba.jpg'
-
-const Formu_Registrar_Producto = () => {
+import '../componentes/css/Formu_Registrar_Producto.css';
+const Formu_Registrar_Producto = ({
+    previewImg,
+    formData,
+    categorias,
+    handleChange,
+    handleSubmit
+}) => {
     return(
-        <form action="" className="contenedor_formu_inicio_sesion">
+        <form onSubmit={handleSubmit}className="contenedor_formu_inicio_sesion">
 
-            <p>Producto</p>
+            <p>Registrar Producto</p>
 
-            <img src={img_1} alt="" />
-
+            <img 
+                src={previewImg || "https://via.placeholder.com/200"} 
+                alt="preview" 
+                className="preview_producto"
+            />
             <div>
-                <input type="text" placeholder="Titulo" required/>
-                <input type="text" placeholder="Descripción" required/>
-                <input type="number" placeholder="Precio" required/>
-                <input type="number" placeholder="Cantidad" required/>
-                <input type="text" placeholder="Imagen URL" required/>
+                <input 
+                    type="text" 
+                    name="titulo"
+                    value={formData.titulo}
+                    onChange={handleChange}
+                    placeholder="Título"
+                    required
+                />
+
+                <input 
+                    type="text" 
+                    name="descripcion"
+                    value={formData.descripcion}
+                    onChange={handleChange}
+                    placeholder="Descripción"
+                    required
+                />
+
+                <input 
+                    type="number" 
+                    name="precio"
+                    value={formData.precio}
+                    onChange={handleChange}
+                    placeholder="Precio"
+                    required
+                />
+
+                <input 
+                    type="text" 
+                    name="imagen"
+                    value={formData.imagen}
+                    onChange={handleChange}
+                    placeholder="URL de imagen"
+                    required
+                />
+
+                <select 
+                    name="categoria" 
+                    value={formData.categoria}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Seleccionar categoría</option>
+
+                    {categorias.map(cat => (
+                        <option key={cat.Id_categoria} value={cat.Id_categoria}>
+                            {cat.Nombre_categoria}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <div>

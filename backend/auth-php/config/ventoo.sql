@@ -8,6 +8,7 @@ CREATE DATABASE ventoo
     PRIMARY KEY (Id_categoria)
 );
 
+
 CREATE TABLE Pedido (
     Id_pedido int(6) NOT NULL,
     Direccion_envio varchar(50) NOT NULL,
@@ -18,25 +19,24 @@ CREATE TABLE Pedido (
     Id_usuario int(6) NOT NULL,
     PRIMARY KEY (Id_pedido, Id_usuario)
 );
-
 CREATE TABLE Producto (
     Id_producto int(6) NOT NULL AUTO_INCREMENT,
-    Nombre varchar(20) NOT NULL,
-    Descripcion varchar(30) NOT NULL,
+    Nombre varchar(100) NOT NULL,
+    Descripcion varchar(255) NOT NULL,
     Precio decimal(10, 2) NOT NULL,
-    Imagen varchar(255) NOT NULL,
+    Imagen MEDIUMTEXT NOT NULL,
     Fecha_publicacion date NOT NULL,
     Id_categoria int(6) NOT NULL,
     PRIMARY KEY (Id_producto)
 );
-
 CREATE TABLE Usuario (
     Id_usuario int(6) NOT NULL AUTO_INCREMENT,
     Nombre varchar(30) NOT NULL,
     Email varchar(255) NOT NULL,
     Telefono int(10) NOT NULL,
-    Contraseña varchar(255) NOT NULL,
+    Contrasena varchar(255) NOT NULL,
     Tipo_cliente varchar(15) NOT NULL,
+    Imagen VARCHAR(255) DEFAULT 'default.png',
     PRIMARY KEY (Id_usuario)
 );
 
@@ -76,3 +76,20 @@ ALTER TABLE Usuario_Producto
     REFERENCES Producto (Id_producto)
     ON DELETE CASCADE 
     ON UPDATE CASCADE;
+
+INSERT INTO Categoria (Nombre_categoria) VALUES
+('Ropa'),
+('Calzado'),
+('Electrónica'),
+('Hogar'),
+('Cocina'),
+('Belleza y Cuidado Personal'),
+('Juguetes'),
+('Deportes'),
+('Mascotas'),
+('Accesorios'),
+('Herramientas'),
+('Libros'),
+('Oficina'),
+('Salud'),
+('Arte y Manualidades');

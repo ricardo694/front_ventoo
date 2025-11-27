@@ -29,6 +29,7 @@ const App = () => {
         <Route path="/Perfil_Vendedor" element = {<Perfil_Vendedor/>}/>
         <Route path="/Registrar_Producto" element = {<Registro_Producto/>}/>
         <Route path="/Editar_Producto" element = {<Editar_Producto/>}/>
+        <Route path="/producto/:id" element={<Info_Producto />} />
       </Routes>
     </BrowserRouter>
   )

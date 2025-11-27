@@ -29,7 +29,7 @@ $usuario->Nombre = $data->nombre;
 $usuario->Email = $data->email;
 $usuario->Telefono = $data->telefono;
 $usuario->Tipo_cliente = $data->tipo;
-$usuario->Contraseña = password_hash($data->password, PASSWORD_BCRYPT);
+$usuario->Contrasena = password_hash($data->password, PASSWORD_BCRYPT);
 
 if($usuario->registrar()){
     echo json_encode(["message" => "Usuario registrado correctamente"]);

@@ -18,3 +18,19 @@
     gap: 40px;
     margin: 50px 0px 0px 0px;
 }
+
+.imagen_perfil_usuario {
+    width: 120px;       
+    height: 120px;
+    border-radius: 50%; 
+    object-fit: cover;  
+    border: 3px solid #ddd;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+/* EFECTO HOVER */
+.imagen_perfil_usuario:hover {
+    transform: scale(1.05);
+    border-color: #aaa;
+}

@@ -8,7 +8,38 @@ import Filtros_Busqueda from "../componentes/Filtros_Busqueda";
 import Tarjeta_Producto from "../componentes/Tarjeta_Producto";
 
 const Compra = () => {
+    const [productos, setProductos] = React.useState([]);
 
+    useEffect(() => {
+        AOS.init({ duration: 800, offset: 100 });
+
+        const obtenerProductos = async () => {
+            const res = await fetch("http://localhost:3001/productos");
+            const data = await res.json();
+
+            if (data.success) {
+                setProductos(data.productos);
+            }
+        };
+
+        obtenerProductos();
+    }, []);
+
+       const getImageSrc = (img) => {
+    if (!img) return "";
+
+    const trimmed = img.trim(); // <-- IMPORTANTE
+
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+        return trimmed; // URL completa
+    }
+
+    if (trimmed.startsWith("data:image")) {
+        return trimmed; // Base64
+    }
+
+    return `http://localhost:3001/uploads/${trimmed}`;
+};
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -26,28 +57,23 @@ const Compra = () => {
                     <Filtros_Busqueda/>
                 </div>
 
-                <div className="caja_productos">
-                    <p>Ropa</p>
+                    <div className="caja_productos">
+                        <p>Ropa</p>
 
-                    <div>
-                        <Tarjeta_Producto
-                            texto_tarjeta={'Ver'}
-                            ruta_tarjeta={'/Ver_Informacion_Producto'}
-                        />
-                        <Tarjeta_Producto
-                            texto_tarjeta={'Ver'}
-                            ruta_tarjeta={'/Ver_Informacion_Producto'}
-                        />
-                        <Tarjeta_Producto
-                            texto_tarjeta={'Ver'}
-                            ruta_tarjeta={'/Ver_Informacion_Producto'}
-                        />
-                        <Tarjeta_Producto
-                            texto_tarjeta={'Ver'}
-                            ruta_tarjeta={'/Ver_Informacion_Producto'}
-                        />
+                        <div>
+                            {productos.map(p => (
+                                <Tarjeta_Producto
+                                    key={p.Id_producto}
+                                    nombre={p.Nombre}
+                                    precio={p.Precio}
+                                    imagen={getImageSrc(p.Imagen)}
+                                    ruta_tarjeta={p.Id_producto}
+                                />
+                            ))}
+                        </div>
                     </div>
-                </div>
+
+
 
             </div>
 

@@ -1,21 +1,33 @@
 import React from "react";
 import '../componentes/css/Tarjeta_Producto.css'
-import img_1 from '../img/foto_prueba.jpg'
 import { Link } from "react-router-dom";
 
-const Tarjeta_Producto = ({texto_tarjeta, ruta_tarjeta}) => {
-    return(
+const Tarjeta_Producto = ({ nombre, precio, imagen, ruta_tarjeta }) => {
+    return (
         <div className="contenedor_tarjeta_producto">
-            <img src={img_1} alt="" />
+            <img
+                src={imagen}
+                alt={nombre}
+                style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    borderRadius: "10px"
+                }}
+                onError={(e) => {
+                    e.target.src =
+                        "https://via.placeholder.com/300x200?text=Imagen+no+disponible";
+                }}
+            />
 
             <div>
-                <p>Pintura Carisima</p>
-                <p>$10.000</p>
+                <p>{nombre}</p>
+                <p>${precio}</p>
             </div>
 
-            <Link to={ruta_tarjeta}>{texto_tarjeta}</Link>
+            <Link to={`/producto/${ruta_tarjeta}`}>Ver</Link>
         </div>
-    )
-}
+    );
+};
 
-export default Tarjeta_Producto
+export default Tarjeta_Producto;

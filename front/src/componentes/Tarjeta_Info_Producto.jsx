@@ -1,40 +1,53 @@
 import React, { useState } from "react";
-import '../componentes/css/Tarjeta_Info_Producto.css'
-import img_1 from '../img/foto_prueba.jpg'
-import perfil from '../img/avatar.png'
-import { Link } from "react-router-dom";
+import '../componentes/css/Tarjeta_Info_Producto.css';
 
-const Tarjeta_Info_Producto = () => {
+const Tarjeta_Info_Producto = ({ producto }) => {
+    const [cantidad, setCantidad] = useState(1);
 
-    const [cantidad, setCantidad] = useState(0)
+    // -------------------------------
+    // 1. Procesar imagen del producto
+    // -------------------------------
+    let imagenProducto = producto.Imagen;
 
-    const Aumentar = () => {
-        setCantidad(cantidad + 1)
+    // Si es URL normal → se deja igual
+    if (imagenProducto.startsWith("http")) {
+        // ok
+    }
+    // Si es base64 sin encabezado → agregarlo
+    else if (!imagenProducto.startsWith("data:image")) {
+        imagenProducto = `data:image/jpeg;base64,${imagenProducto}`;
     }
 
-    const Disminuir = () => {
-        setCantidad(cantidad - 1)
-    }
+    // -------------------------------
+    // 2. Foto del vendedor
+    // -------------------------------
+    let fotoVendedor =
+        producto.FotoVendedor && producto.FotoVendedor !== ""
+            ? producto.FotoVendedor
+            : "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // foto por defecto
 
-    return(
+    return (
         <div className="contenedor_tarjeta_info_producto">
-            <p>Pintura Carisima</p>
+            <p>{producto.Nombre}</p>
 
             <div className="caja_info_producto_tarjeta_info_producto">
-                <img src={img_1} alt="" />
+                <img 
+                    src={imagenProducto}
+                    alt={producto.Nombre}
+                    onError={e => e.target.src = "https://via.placeholder.com/200"}
+                />
 
                 <div>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident,</p>
-                    
-                    <p>Cantidad: 10 </p>
+                    <p>{producto.Descripcion}</p>
+                    <p>Cantidad disponible: 10</p>
 
                     <div>
-                        <p>$10.000</p>
+                        <p>${producto.Precio}</p>
 
                         <div>
-                            <button onClick={Disminuir}>-</button>
+                            <button onClick={() => setCantidad(c => Math.max(1, c - 1))}>-</button>
                             <p>{cantidad}</p>
-                            <button onClick={Aumentar}>+</button>
+                            <button onClick={() => setCantidad(c => c + 1)}>+</button>
                         </div>
                     </div>
 
@@ -44,12 +57,17 @@ const Tarjeta_Info_Producto = () => {
                 </div>
             </div>
 
-            <div>
-                <img src={perfil} alt="" />
-                <p>Vendedor</p>
+            {/* Información del vendedor */}
+            <div className="vendedor_box">
+                <img 
+                    src={fotoVendedor}
+                    alt="Foto del vendedor"
+                    onError={e => e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                />
+                <p>{producto.NombreVendedor || "Vendedor desconocido"}</p>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Tarjeta_Info_Producto
+export default Tarjeta_Info_Producto;

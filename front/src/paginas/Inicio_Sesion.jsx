@@ -8,30 +8,61 @@ import Footer from "../componentes/Footer";
 import Formu_Inicio_Sesion from "../componentes/Formu_Inicio_Sesion";
 
 const Inicio_Sesion = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    /*------------------
+    DATOS DEL FORMULARIO
+    -----------------*/ 
+    const [formData, setFormData]= useState({
+        email:"",
+        contrasena:""
+    })
+
+    /*-----------------------------------------
+    NAVEGAR A OTRO APARTADO DESPUES DE REGISTRO
+    ------------------------------------------*/ 
     const navigate = useNavigate();
 
+    /*---------------------------
+    MANEJAR CAMBIOS EN LOS INPUTS
+    ---------------------------*/
+    const handleChange = (e) => {
+        const {name, value } = e.target;
+        setFormData ({...formData, [name]: value });
+    };
+
+    /*------------------------------
+    MAENAJAR EL ENVIO DEL FORMULARIO
+    ------------------------------*/
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        const res = await fetch("http://localhost:3001/login", {
+    try{
+        const response = await fetch("http://localhost:3001/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({
+                 email: formData.email,
+                contrasena: formData.contrasena
+                })
         });
 
-        const data = await res.json();
+        const data = await response.json();
+        console.log(data)
 
-        if (data.success) {
-            alert("Bienvenido " + data.usuario.nombre);
-            navigate("/"); 
+        if (response.ok){
+             localStorage.setItem("usuario", JSON.stringify(data.usuario));
+                alert("¡Bienvenido!");
+                navigate("/");
         } else {
-            alert(data.message);
+                alert(data.error || "Error en las credenciales ");
+        }
+        }catch(error){
+            console.error("Error en la petición:", error);
+            alert("No se pudo conectar con el servidor ");
         }
     }
-
+    /*------------------------------
+    ANIMACIÓN
+    ------------------------------*/
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -46,11 +77,10 @@ const Inicio_Sesion = () => {
 
             <div data-aos="fade-up" data-aos-duration="1000">
                 <Formu_Inicio_Sesion
-                    handleSubmit={handleSubmit}
-                    email={email}
-                    setEmail={setEmail}
-                    password={password}
-                    setPassword={setPassword}
+                    email={formData.email}
+                    contrasena={formData.contrasena}
+                    onChange={handleChange}
+                    onSubmit={handleSubmit}
                 />
             </div>
 

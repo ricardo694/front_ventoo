@@ -1,14 +1,26 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import '../paginas/css/Registro_Producto.css'
 import Encabezado from "../componentes/Encabezado";
 import Footer from "../componentes/Footer";
 import Formu_Registrar_Producto from "../componentes/Formu_Registrar_Producto";
-import { Link } from "react-router-dom";
+import { Link, useNavigate  } from "react-router-dom";
 
 const Registro_Producto = () => {
 
+    const navigate = useNavigate();
+    
+
+    const [formData, setFormData] = useState({
+        titulo: "",
+        descripcion: "",
+        precio: "",
+        imagen: "",
+        categoria: ""
+    });
+    const [categorias, setCategorias] = useState([]);
+    const [previewImg, setPreviewImg] = useState("");
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -16,23 +28,106 @@ const Registro_Producto = () => {
         once: false,         // si quieres que se repita al subir/bajar
         });
     }, []);
+// ==================================
+    // ACTUALIZAR CAMPOS
+    // ==================================
+    const handleChange = (e) => {
+        const { name, value } = e.target;
 
-    return(
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+
+        // Si cambia el campo imagen, actualizamos la preview
+        if (name === "imagen") {
+            setPreviewImg(value);
+        }
+    };
+
+    // ==================================
+    // ENVIAR PRODUCTO AL BACKEND
+    // ==================================
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await fetch("http://localhost:3001/registrar_producto", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(formData)
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                alert("Producto registrado correctamente");
+
+                // vaciar formulario
+                setFormData({
+                    titulo: "",
+                    descripcion: "",
+                    precio: "",
+                    imagen: ""
+                });
+                setPreviewImg("");
+
+                navigate("/Perfil_Vendedor");
+            } else {
+                alert(data.message);
+            }
+
+        } catch (error) {
+            console.log(error);
+            alert("Error del servidor");
+        }
+    };
+
+    // ==================================
+    // OBTENER CATEGORIAS 
+    // ==================================
+    useEffect(() => {
+    AOS.init({ duration: 800, offset: 100 });
+
+    const fetchCategorias = async () => {
+        try {
+            const res = await fetch("http://localhost:3001/categorias");
+            const data = await res.json();
+
+            if (data.success) {
+                setCategorias(data.categorias);
+            }
+        } catch (error) {
+            console.log("Error cargando categorías:", error);
+        }
+    };
+
+    fetchCategorias();
+}, []);
+
+    return (
         <div className="contenedor_registro_producto">
-            <Encabezado/>
+            <Encabezado />
 
             <div data-aos="fade-up" data-aos-duration="1000">
 
-                <Link to={'/Perfil_Vendedor'}>{'<'} Devolverse</Link>
+                <Link to={"/Perfil_Vendedor"}>{'<'} Volver</Link>
 
                 <div>
-                    <Formu_Registrar_Producto/>
+                    <Formu_Registrar_Producto
+                        previewImg={previewImg}
+                        formData={formData}
+                        categorias={categorias}
+                        handleChange={handleChange}
+                        handleSubmit={handleSubmit}
+                    />
                 </div>
             </div>
 
-            <Footer/>
+            <Footer />
         </div>
-    )
-}
+    );
+};
 
-export default Registro_Producto
+export default Registro_Producto;

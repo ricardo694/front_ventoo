@@ -1,0 +1,31 @@
+.preview_producto {
+    width: 180px;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    margin: 10px auto;
+    border: 2px solid #ddd;
+}
+
+.contenedor_formu_inicio_sesion {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 350px;
+    margin: auto;
+}
+
+.contenedor_formu_inicio_sesion input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.contenedor_formu_inicio_sesion button {
+    width: 100%;
+    padding: 12px;
+    background: black;
+    color: white;
+    border-radius: 8px;
+}

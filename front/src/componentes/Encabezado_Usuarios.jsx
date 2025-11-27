@@ -1,22 +1,44 @@
 import React from "react";
 import '../componentes/css/Encabezado_Cliente.css'
-import perfil from '../img/avatar.png'
+import perfilDefault from '../img/avatar.png';
 
-const Encabezado_Usuarios = () => {
-    return(
+const Encabezado_Usuarios = ({
+    nombre,
+    email,
+    imagen,
+    handleImagenChange,
+    handleCerrarSesion
+}) => {
+
+    return (
         <div className="contenedor_encabezado_cliente">
-            <div>
-                <img src={perfil} alt="" />
+
+            <div className="info_usuario">
+                <label>
+                    <img 
+                        src={imagen || perfilDefault}
+                        alt="perfil"
+                        className="imagen_perfil_usuario"
+                    />
+
+                    {/* INPUT invisible */}
+                    <input 
+                        type="file" 
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={handleImagenChange}
+                    />
+                </label>
 
                 <div>
-                    <p>Cliente marica</p>
-                    <p>marica@gmail.com</p>
+                    <p>{nombre}</p>
+                    <p>{email}</p>
                 </div>
             </div>
 
-            <button>Salir</button>
+            <button onClick={handleCerrarSesion}>Salir</button>
         </div>
-    )
-}
+    );
+};
 
-export default Encabezado_Usuarios
+export default Encabezado_Usuarios;
