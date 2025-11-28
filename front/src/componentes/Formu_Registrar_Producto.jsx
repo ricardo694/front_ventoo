@@ -61,7 +61,7 @@ const Formu_Registrar_Producto = ({
                     required
                 >
                     <option value="">Seleccionar categoría</option>
-
+                    {/*OBTENER CATEGORIA DE LA BASE DE DATOS*/}
                     {categorias.map(cat => (
                         <option key={cat.Id_categoria} value={cat.Id_categoria}>
                             {cat.Nombre_categoria}

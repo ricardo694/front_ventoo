@@ -2,35 +2,39 @@ import React from "react";
 import '../componentes/css/Productos_Vendedor.css'
 import Tarjeta_Producto from "./Tarjeta_Producto";
 
-const Productos_Vendedor = () => {
+const Productos_Vendedor = ({productos, eliminarProducto}) => {
     return(
         <div className="contenedor_productos_vendedor">
             <p>Tus Productos</p>
 
-            <div>
-                <div>
-                    <Tarjeta_Producto
-                        texto_tarjeta={'Editar'}
-                        ruta_tarjeta={'/Editar_Producto'}
-                    />
-                    <button>Eliminar</button>
-                </div>
+            <div >
+                {productos.length > 0 ? (
+                    productos.map(producto => (
+                        <div key={producto.Id_producto} className="producto_vendedor_card">
 
-                <div>
-                    <Tarjeta_Producto
-                        texto_tarjeta={'Editar'}
-                        ruta_tarjeta={'/Editar_Producto'}
-                    />
-                    <button>Eliminar</button>
-                </div>
+                            <img 
+                                src={producto.Imagen}
+                                alt={producto.Nombre}
+                                className="producto_vendedor_img"
+                            />
 
-                <div>
-                    <Tarjeta_Producto
-                        texto_tarjeta={'Editar'}
-                        ruta_tarjeta={'/Editar_Producto'}
-                    />
-                    <button>Eliminar</button>
-                </div>
+                            <h3>{producto.Nombre}</h3>
+                            <p>{producto.Descripcion}</p>
+                            <p>${producto.Precio}</p>
+
+                            <button 
+                                className="btn_eliminar"
+                                onClick={() => eliminarProducto(producto.Id_producto)}
+                            >
+                                Eliminar
+                            </button>
+
+                        </div>
+                    ))
+                ) : (
+                    <p>No has registrado productos todavía</p>
+                )}
+                
             </div>
         </div>
     )

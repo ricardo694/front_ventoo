@@ -11,10 +11,8 @@ const Mas_Del_Vendedor = ({ productos }) => {
                 {productos.map(p => (
                     <Tarjeta_Producto
                         key={p.Id_producto}
-                        nombre={p.Nombre}
-                        precio={p.Precio}
-                        imagen={`data:image/jpeg;base64,${p.Imagen}`}
-                        ruta_tarjeta={p.Id_producto}
+                        producto={p}
+                        ruta_tarjeta={`/Info_Producto/${p.Id_producto}`}
                     />
                 ))}
             </div>

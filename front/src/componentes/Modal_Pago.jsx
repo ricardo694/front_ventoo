@@ -3,7 +3,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import '../componentes/css/Modal_Pago.css'
 
-const Modal_Pago = ({Mostrar_Modal_Pago}) => {
+const Modal_Pago = ({Mostrar_Modal_Pago, total}) => {
 
     useEffect(() => {
         AOS.init({
@@ -19,14 +19,17 @@ const Modal_Pago = ({Mostrar_Modal_Pago}) => {
             <div data-aos="fade-up" data-aos-duration="1000">
                 <div>
                     <p>Total a Pagar:</p>
-                    <p>$10.000</p>
+                    <p>${total.toLocaleString()}</p>
                 </div>
                 
-                <form action="">
+                <form>
                     <p>Meotodo de Pago</p>
 
-                    <select name="" id="">
-                        <option value="" hidden>Seleccionar...</option>
+                    <select>
+                        <option hidden>Seleccionar...</option>
+                        <option value="Tarjeta">Tarjeta</option>
+                        <option value="Nequi">Nequi</option>
+                        <option value="Bancolombia">Bancolombia</option>
                     </select>
 
                     <button>Finalizar Compra</button>

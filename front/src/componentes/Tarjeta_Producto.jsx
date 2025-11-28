@@ -2,12 +2,22 @@ import React from "react";
 import '../componentes/css/Tarjeta_Producto.css'
 import { Link } from "react-router-dom";
 
-const Tarjeta_Producto = ({ nombre, precio, imagen, ruta_tarjeta }) => {
+const Tarjeta_Producto = ({ producto, ruta_tarjeta }) => {
+    if (!producto) return null;
+
+    const { Imagen, Nombre, Precio } = producto;
+
+    // Detectar formato correcto de imagen
+    const srcImagen =
+        Imagen?.startsWith("data:image") ? Imagen :           // base64
+        Imagen?.startsWith("http") ? Imagen :                 // URL completa
+        `http://localhost:3001/uploads/${Imagen}`;            // archivo local
+
     return (
         <div className="contenedor_tarjeta_producto">
             <img
-                src={imagen}
-                alt={nombre}
+                src={srcImagen}
+                alt={Nombre}
                 style={{
                     width: "100%",
                     height: "200px",
@@ -21,11 +31,12 @@ const Tarjeta_Producto = ({ nombre, precio, imagen, ruta_tarjeta }) => {
             />
 
             <div>
-                <p>{nombre}</p>
-                <p>${precio}</p>
+                <p>{Nombre}</p>
+                <p>${Precio}</p>
             </div>
 
-            <Link to={`/producto/${ruta_tarjeta}`}>Ver</Link>
+
+            <Link to={ruta_tarjeta}>Ver</Link>
         </div>
     );
 };

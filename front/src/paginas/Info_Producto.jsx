@@ -9,10 +9,13 @@ import Tarjeta_Info_Producto from "../componentes/Tarjeta_Info_Producto";
 import Mas_Del_Vendedor from "../componentes/Mas_Del_Vendedor";
 
 const Info_Producto = () => {
+
+    //====ESTADOS NECESARIOS
     const { id } = useParams();
     const [producto, setProducto] = useState(null);
     const [masDelVendedor, setMasDelVendedor] = useState([]);
-
+    
+    //=====AOS
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -21,18 +24,20 @@ const Info_Producto = () => {
         });
     }, []);
 
+    //====OBTENER PRODUCTO POR ID
     useEffect(() => {
         fetch(`http://localhost:3001/producto/${id}`)
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
+            console.log("Datos completos del backend:", data);
+            console.log("Productos del mismo vendedor:", data.masDelVendedor);
+
                     setProducto(data.producto);
                     setMasDelVendedor(data.masDelVendedor);
                 }
             });
     }, [id]);
-
-     if (!producto) return <p>Cargando producto...</p>;
 
     return(
         <div className="contenedor_info_tarjeta">

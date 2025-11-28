@@ -8,8 +8,11 @@ import Filtros_Busqueda from "../componentes/Filtros_Busqueda";
 import Tarjeta_Producto from "../componentes/Tarjeta_Producto";
 
 const Compra = () => {
-    const [productos, setProductos] = React.useState([]);
 
+    //======ESTADOS NECESARIOS
+    const [productos, setProductos] = React.useState([]);
+    
+    //======OBTENER PRODUCTOS
     useEffect(() => {
         AOS.init({ duration: 800, offset: 100 });
 
@@ -25,21 +28,24 @@ const Compra = () => {
         obtenerProductos();
     }, []);
 
+    //======OBTENER IMAGENES 
        const getImageSrc = (img) => {
     if (!img) return "";
 
-    const trimmed = img.trim(); // <-- IMPORTANTE
+    const trimmed = img.trim(); 
 
     if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-        return trimmed; // URL completa
+        return trimmed; 
     }
 
     if (trimmed.startsWith("data:image")) {
-        return trimmed; // Base64
+        return trimmed; 
     }
 
     return `http://localhost:3001/uploads/${trimmed}`;
 };
+
+//======AOS
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -64,9 +70,7 @@ const Compra = () => {
                             {productos.map(p => (
                                 <Tarjeta_Producto
                                     key={p.Id_producto}
-                                    nombre={p.Nombre}
-                                    precio={p.Precio}
-                                    imagen={getImageSrc(p.Imagen)}
+                                    producto={p}
                                     ruta_tarjeta={p.Id_producto}
                                 />
                             ))}

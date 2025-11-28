@@ -8,6 +8,7 @@ import Formu_Registro from "../componentes/Formu_Registro";
 
 const Registro = () => {
 
+      //========ESTADOS NECESARIOS
     const [form, setForm] = useState({
     nombre: "",
     telefono: "",
@@ -15,19 +16,15 @@ const Registro = () => {
     tipo: "",
     password: ""
     });
-
     const navigate = useNavigate();
-
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
     
 
-
-        
+    //=========REGISTRAR
     const res = await fetch("http://localhost/front_ventoo/backend/auth-php/routes/register.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -56,7 +53,7 @@ const Registro = () => {
 
 
     
-    
+    //=====AOS
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade

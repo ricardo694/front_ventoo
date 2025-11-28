@@ -10,12 +10,12 @@ import { useNavigate } from "react-router-dom";
 
 const Perfil_Vendedor = () => {
 
-    //========ESTADOS NECESARIOS========= ==
+    //========ESTADOS NECESARIOS
     const navigate = useNavigate();
     const [usuario, setUsuario] = useState(null);
     const [imagenPreview, setImagenPreview] = useState(null);
-
-   //================== OBTENER USUARIO ==================
+    const [productosVendedor, setProductosVendedor] = useState([]);
+   //========= OBTENER USUARIO 
     useEffect(() => {
         const obtenerUsuario = async () => {
             const res = await fetch("http://localhost:3001/usuario_logueado", {
@@ -33,7 +33,7 @@ const Perfil_Vendedor = () => {
         obtenerUsuario();
     }, []);
 
-    //================ SUBIR FOTO =================
+    //============SUBIR FOTO
     const handleImagenChange = async (e) => {
         const archivo = e.target.files[0];
         if (!archivo) return;
@@ -61,8 +61,45 @@ const Perfil_Vendedor = () => {
         }
     };
 
+    //=====OBTENER PRODUCTOS DEL VENDEDOR
+    useEffect(() => {
+    const obtenerProductosVendedor = async () => {
+        const res = await fetch("http://localhost:3001/productos_vendedor", {
+            credentials: "include"
+        });
+        const data = await res.json();
 
-    //================ CERRAR SESIÓN =================
+        if (data.success) {
+            setProductosVendedor(data.productos);
+        }
+    };
+
+    obtenerProductosVendedor();
+    }, []);
+
+    //=====ELIMINAR PRODUCTO
+    const eliminarProducto = async (idProducto) => {
+    if (!window.confirm("¿Seguro que quieres eliminar este producto?")) return;
+
+    const res = await fetch(`http://localhost:3001/eliminar_producto/${idProducto}`, {
+        method: "DELETE",
+        credentials: "include"
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        // quitarlo del estado sin recargar
+        setProductosVendedor(prev =>
+            prev.filter(p => p.Id_producto !== idProducto)
+        );
+    } else {
+        alert("Error al eliminar: " + data.message);
+    }
+    };
+
+
+    //=========CERRAR SESIÓN 
     const handleCerrarSesion = async () => {
         if (!window.confirm("¿Seguro que quieres cerrar tu sesión?")) return;
 
@@ -82,6 +119,8 @@ const Perfil_Vendedor = () => {
             console.error("Error:", error.message);
         }
     };
+
+    //=====AOS
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -89,10 +128,22 @@ const Perfil_Vendedor = () => {
         once: false,         // si quieres que se repita al subir/bajar
         });
     }, []);
-    if (!usuario) return null; // evitar render vacío
+
+    //=====CARGAR IMAGEN
 
     const imagenFinal = imagenPreview ||
-        (usuario.Imagen ? `http://localhost:3001/uploads/${usuario.Imagen}` : null);
+        (usuario?.Imagen ? `http://localhost:3001/uploads/${usuario.Imagen}` : null);
+
+    // No renderizar nada hasta que usuario esté cargado
+    if (!usuario) {
+        return (
+            <div className="contenedor_perfil_cliente">
+                <Encabezado/>
+                <p>Cargando perfil...</p>
+                <Footer/>
+            </div>
+        );
+    }
     return(
         <div className="contenedor_perfil_cliente">
             <Encabezado/>
@@ -108,7 +159,10 @@ const Perfil_Vendedor = () => {
 
                 <Link to={'/Registrar_Producto'} className="boton_registrar_producto">Registrar</Link>
                 
-                <Productos_Vendedor/>
+                <Productos_Vendedor 
+                    productos={productosVendedor} 
+                    eliminarProducto={eliminarProducto}
+                />
             </div>
 
             <Footer/>

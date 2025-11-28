@@ -2,30 +2,56 @@ import React, { useState } from "react";
 import '../componentes/css/Tarjeta_Info_Producto.css';
 
 const Tarjeta_Info_Producto = ({ producto }) => {
+    if (!producto) return null; 
+    //====ESTADOS NECESARIOS
+    
+    const usuario = JSON.parse(localStorage.getItem("usuario"));
+
     const [cantidad, setCantidad] = useState(1);
 
-    // -------------------------------
-    // 1. Procesar imagen del producto
-    // -------------------------------
-    let imagenProducto = producto.Imagen;
+    const agregarCarrito = async (idProducto, cantidad) => {
+        if (!usuario) {
+            alert("Debes iniciar sesión.");
+            return;
+        }
 
-    // Si es URL normal → se deja igual
+        const res = await fetch("http://localhost:3001/carrito/agregar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                Id_usuario: usuario.Id_usuario,
+                Id_producto: idProducto,
+                Cantidad: cantidad
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            alert("Producto agregado al carrito");
+        } else {
+            alert("Error al agregar al carrito");
+        }
+    };
+
+    //======Procesar imagen del producto
+    let imagenProducto = producto.Imagen || "";
+
     if (imagenProducto.startsWith("http")) {
-        // ok
     }
-    // Si es base64 sin encabezado → agregarlo
     else if (!imagenProducto.startsWith("data:image")) {
         imagenProducto = `data:image/jpeg;base64,${imagenProducto}`;
     }
 
-    // -------------------------------
-    // 2. Foto del vendedor
-    // -------------------------------
+
+    //========Foto del vendedor
+
     let fotoVendedor =
         producto.FotoVendedor && producto.FotoVendedor !== ""
             ? producto.FotoVendedor
             : "https://cdn-icons-png.flaticon.com/512/149/149071.png"; // foto por defecto
 
+            
     return (
         <div className="contenedor_tarjeta_info_producto">
             <p>{producto.Nombre}</p>
@@ -51,9 +77,10 @@ const Tarjeta_Info_Producto = ({ producto }) => {
                         </div>
                     </div>
 
-                    <div>
-                        <button>Agregar</button>
-                    </div>
+                    <button onClick={() => agregarCarrito(producto.Id_producto, cantidad)}>
+                        Agregar
+                    </button>
+
                 </div>
             </div>
 

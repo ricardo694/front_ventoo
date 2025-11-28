@@ -16,8 +16,10 @@ import Footer from "../componentes/Footer";
 
 const Inicio = () => {
 
+    //=====ESTADOS NECESARIOS
     const [productos, setProductos] = React.useState([]);
 
+    //=====OBTENER PRODUCTOS
     useEffect(() => {
         const obtenerProductos = async () => {
             const res = await fetch("http://localhost:3001/productos");
@@ -31,6 +33,7 @@ const Inicio = () => {
         obtenerProductos();
     }, []);
 
+    //=====MANEJO DE IMAGENES
     const getImageSrc = (img) => {
     if (!img) return "";
 
@@ -46,6 +49,8 @@ const Inicio = () => {
 
     return `http://localhost:3001/uploads/${trimmed}`;
 };
+
+    //=====AOS
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -53,6 +58,7 @@ const Inicio = () => {
         once: false,         // si quieres que se repita al subir/bajar
         });
     }, []);
+
 
     const info_tarjetas_inicio = [
         {
@@ -101,9 +107,7 @@ const Inicio = () => {
                             {productos.map(p => (
                                 <Tarjeta_Producto
                                     key={p.Id_producto}
-                                    nombre={p.Nombre}
-                                    precio={p.Precio}
-                                    imagen={getImageSrc(p.Imagen)}
+                                    producto={p}
                                     ruta_tarjeta={p.Id_producto}
                                 />
                             ))}

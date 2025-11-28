@@ -10,11 +10,12 @@ import { useNavigate } from "react-router-dom";
 
 const Perfil_Cliente = () => {
 
+    //=====ESTADOS NECESARIOS
     const navigate = useNavigate();
     const [usuario, setUsuario] = useState(null);
     const [imagenPreview, setImagenPreview] = useState(null);
 
-    //================== OBTENER USUARIO ==================
+    //=====OBTENER USUARIO LOGUEADO
     useEffect(() => {
         const obtenerUsuario = async () => {
             const res = await fetch("http://localhost:3001/usuario_logueado", {
@@ -32,7 +33,7 @@ const Perfil_Cliente = () => {
         obtenerUsuario();
     }, []);
 
-    //================ SUBIR FOTO =================
+    //================SUBIR FOTO
     const handleImagenChange = async (e) => {
         const archivo = e.target.files[0];
         if (!archivo) return;
@@ -61,7 +62,7 @@ const Perfil_Cliente = () => {
     };
 
 
-    //================ CERRAR SESIÓN =================
+    //=========CERRAR SESIÓN 
     const handleCerrarSesion = async () => {
         if (!window.confirm("¿Seguro que quieres cerrar tu sesión?")) return;
 
@@ -83,7 +84,7 @@ const Perfil_Cliente = () => {
     };
 
 
-    //================ AOS =================
+    //================AOS
     useEffect(() => {
         AOS.init({ duration: 800, offset: 100, once: false });
     }, []);

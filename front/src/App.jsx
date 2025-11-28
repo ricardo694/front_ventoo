@@ -17,19 +17,19 @@ const App = () => {
   return(
     <BrowserRouter>
       <Routes>
-        <Route path="*" element = {<Not_Found/>}/>
-        <Route path="/" element = {<Inicio/>}/>
-        <Route path="/Compra" element = {<Compra/>}/>
-        <Route path="/Ver_Informacion_Producto" element = {<Info_Producto/>}/>
-        <Route path="/Inicio_Sesion" element = {<Inicio_Sesion/>}/>
-        <Route path="/Registrarse" element = {<Registro/>}/>
-        <Route path="/Perfil_Cliente" element = {<Perfil_Cliente/>}/>
-        <Route path="/Informacion_Pedido" element = {<Info_Pedido/>}/>
-        <Route path="/Carrito" element = {<Carrito/>}/>
-        <Route path="/Perfil_Vendedor" element = {<Perfil_Vendedor/>}/>
-        <Route path="/Registrar_Producto" element = {<Registro_Producto/>}/>
-        <Route path="/Editar_Producto" element = {<Editar_Producto/>}/>
-        <Route path="/producto/:id" element={<Info_Producto />} />
+        <Route path="/" element={<Inicio />} />
+        <Route path="/Compra" element={<Compra />} />
+        <Route path="/Info_Producto/:id" element={<Info_Producto />} />
+        <Route path="/Inicio_Sesion" element={<Inicio_Sesion />} />
+        <Route path="/Registrarse" element={<Registro />} />
+        <Route path="/Perfil_Cliente" element={<Perfil_Cliente />} />
+        <Route path="/Informacion_Pedido" element={<Info_Pedido />} />
+        <Route path="/Carrito" element={<Carrito />} />
+        <Route path="/Perfil_Vendedor" element={<Perfil_Vendedor />} />
+        <Route path="/Registrar_Producto" element={<Registro_Producto />} />
+        <Route path="/Editar_Producto" element={<Editar_Producto />} />
+        <Route path="/producto/Editar_Producto/:id" element={<Editar_Producto />} />
+        <Route path="*" element={<Not_Found />} />
       </Routes>
     </BrowserRouter>
   )

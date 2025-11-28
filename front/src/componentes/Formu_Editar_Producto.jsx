@@ -1,29 +1,95 @@
 import React from "react";
-import '../componentes/css/Formu_Editar_Producto.css'
-import img_1 from '../img/foto_prueba.jpg'
+import '../componentes/css/Formu_Editar_Producto.css';
 
-const Formu_Editar_Producto = () => {
-    return(
-        <form action="" className="contenedor_formu_editar_producto">
+const Formu_Editar_Producto = ({
+    previewImg,
+    formData,
+    categorias,
+    handleChange,
+    handleSubmit,
+    handleCancel
+}) => {
+    return (
+        <form onSubmit={handleSubmit} className="contenedor_formu_editar_producto">
 
             <p>Producto</p>
 
-            <img src={img_1} alt="" />
+            <img 
+                src={previewImg} 
+                alt="Vista previa"
+                onError={(e)=> e.target.src="https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+            />
 
             <div>
-                <input type="text" placeholder="Titulo" required/>
-                <input type="text" placeholder="Descripción" required/>
-                <input type="number" placeholder="Precio" required/>
-                <input type="number" placeholder="Cantidad" required/>
-                <input type="text" placeholder="Imagen URL" required/>
+                <input 
+                    type="text" 
+                    name="titulo" 
+                    value={formData.titulo}
+                    placeholder="Titulo" 
+                    onChange={handleChange}
+                    required
+                />
+
+                <input 
+                    type="text" 
+                    name="descripcion" 
+                    value={formData.descripcion}
+                    placeholder="Descripción" 
+                    onChange={handleChange}
+                    required
+                />
+
+                <input 
+                    type="number" 
+                    name="precio" 
+                    value={formData.precio}
+                    placeholder="Precio" 
+                    onChange={handleChange}
+                    required
+                />
+
+                <input 
+                    type="number" 
+                    name="cantidad" 
+                    value={formData.cantidad}
+                    placeholder="Cantidad" 
+                    onChange={handleChange}
+                    required
+                />
+
+                <input 
+                    type="text" 
+                    name="imagen" 
+                    value={formData.imagen}
+                    placeholder="Imagen URL" 
+                    onChange={handleChange}
+                    required
+                />
+                    {/* === SELECTOR DE CATEGORIA === */}
+                <select
+                    name="Id_categoria"
+                    value={formData.Id_categoria}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Seleccione una categoría</option>
+                    {categorias.map(cat => (
+                        <option key={cat.Id_categoria} value={cat.Id_categoria}>
+                            {cat.Nombre_categoria}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             <div>
-                <button>Editar</button>
-                <button>Cancelar</button>
+                <button type="submit">Editar</button>
+
+                <button type="button" onClick={() => window.history.back()}>
+                    Cancelar
+                </button>
             </div>
         </form>
-    )
-}
+    );
+};
 
-export default Formu_Editar_Producto
+export default Formu_Editar_Producto;

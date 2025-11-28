@@ -118,14 +118,26 @@
 }
 
 .contenedor_tarjeta_info_producto > div:last-child > img{
-    min-width: 50px;
+    min-width: 40px;
     height: 100%;
     object-fit: contain;
+    border-radius:59% ;
 }
 
 .contenedor_tarjeta_info_producto > div:last-child > p{
     font-size: 20px;
     color: black;
+}
+.caja_info_producto_tarjeta_info_producto>div>button {
+    font-size: 25px;
+    color: black;
+    background-color: var(--color_7);
+    border: none;
+    filter: var(--sombra_2);
+    padding: 3px 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s;
 }
 
 

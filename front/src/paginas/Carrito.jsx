@@ -18,6 +18,8 @@ const Carrito = () => {
 
     //Mostrar model de pago
     const [ver_modal, setVer_modal] = useState(false)
+    const [totalPago, setTotalPago] = useState(0);
+
 
     const Mostrar_Modal_Pago = () => {
         if(ver_modal === false){
@@ -36,6 +38,7 @@ const Carrito = () => {
                 
                 <Productos_Cliente_Carrito
                     Mostrar_Modal_Pago={Mostrar_Modal_Pago}
+                    setTotalPago={setTotalPago}
                 />
                 
             </div>
@@ -49,6 +52,7 @@ const Carrito = () => {
             (
                 <Modal_Pago
                     Mostrar_Modal_Pago={Mostrar_Modal_Pago}
+                    total={totalPago}
                 />
             )}
         </div>

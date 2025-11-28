@@ -8,30 +8,21 @@ import Footer from "../componentes/Footer";
 import Formu_Inicio_Sesion from "../componentes/Formu_Inicio_Sesion";
 
 const Inicio_Sesion = () => {
-    /*------------------
-    DATOS DEL FORMULARIO
-    -----------------*/ 
+
+    //======ESTADOS NECESARIOS
     const [formData, setFormData]= useState({
         email:"",
         contrasena:""
     })
-
-    /*-----------------------------------------
-    NAVEGAR A OTRO APARTADO DESPUES DE REGISTRO
-    ------------------------------------------*/ 
     const navigate = useNavigate();
 
-    /*---------------------------
-    MANEJAR CAMBIOS EN LOS INPUTS
-    ---------------------------*/
+    //=======MANEJAR CAMBIOS EN LOS INPUTS
     const handleChange = (e) => {
         const {name, value } = e.target;
         setFormData ({...formData, [name]: value });
     };
 
-    /*------------------------------
-    MAENAJAR EL ENVIO DEL FORMULARIO
-    ------------------------------*/
+    //========MAENAJAR EL ENVIO DEL FORMULARIO
     const handleSubmit = async (e) => {
         e.preventDefault();
     try{
@@ -48,11 +39,18 @@ const Inicio_Sesion = () => {
         const data = await response.json();
         console.log(data)
 
-        if (response.ok){
-             localStorage.setItem("usuario", JSON.stringify(data.usuario));
-                alert("¡Bienvenido!");
-                navigate("/");
-        } else {
+        if (response.ok) {
+            if (data.usuario && data.usuario.Tipo_cliente) {
+                localStorage.setItem("usuario", JSON.stringify(data.usuario));
+            } else {
+                console.warn("El backend devolvió usuario inválido:", data.usuario);
+                localStorage.removeItem("usuario");
+            }
+
+            alert("¡Bienvenido!");
+            navigate("/");
+        }
+         else {
                 alert(data.error || "Error en las credenciales ");
         }
         }catch(error){
@@ -60,9 +58,7 @@ const Inicio_Sesion = () => {
             alert("No se pudo conectar con el servidor ");
         }
     }
-    /*------------------------------
-    ANIMACIÓN
-    ------------------------------*/
+    //========AOS   
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade

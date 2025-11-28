@@ -26,27 +26,46 @@
     filter: var(--sombra_2);
 }
 
-.contenedor_productos_vendedor > div > div{
+/* --- Cada tarjeta del vendedor --- */
+.producto_vendedor_card{
+    width: 260px;
+    background: var(--color_1);
+    border-radius: 10px;
+    padding: 15px;
+    border: var(--border_1);
+    filter: var(--sombra_2);
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     gap: 10px;
+    text-align: center;
+    transition: .3s;
 }
 
-.contenedor_productos_vendedor > div > div > button{
+
+/* --- Imagen del producto --- */
+.producto_vendedor_img{
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: var(--border_1);
+}
+
+/* --- Botón eliminar --- */
+.btn_eliminar{
     font-size: 20px;
     color: var(--color_4);
     background-color: var(--color_6);
     border: none;
     filter: var(--sombra_2);
-    padding: 3px 40px;
+    padding: 5px 40px;
     border-radius: 10px;
     cursor: pointer;
     transition: .3s;
 }
 
-.contenedor_productos_vendedor > div > div > button:hover{
+.btn_eliminar:hover{
     filter: none;
     transform: var(--tamano_1);
 }

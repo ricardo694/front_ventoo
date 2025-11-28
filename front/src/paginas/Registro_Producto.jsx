@@ -8,10 +8,9 @@ import Formu_Registrar_Producto from "../componentes/Formu_Registrar_Producto";
 import { Link, useNavigate  } from "react-router-dom";
 
 const Registro_Producto = () => {
-
-    const navigate = useNavigate();
     
-
+    //=====ESTADOS NECESARIOS
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         titulo: "",
         descripcion: "",
@@ -21,6 +20,8 @@ const Registro_Producto = () => {
     });
     const [categorias, setCategorias] = useState([]);
     const [previewImg, setPreviewImg] = useState("");
+
+    //====AOS
     useEffect(() => {
         AOS.init({
         duration: 800,       // duración del fade
@@ -28,9 +29,8 @@ const Registro_Producto = () => {
         once: false,         // si quieres que se repita al subir/bajar
         });
     }, []);
-// ==================================
-    // ACTUALIZAR CAMPOS
-    // ==================================
+    // ========ACTUALIZAR CAMPOS
+
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -39,15 +39,13 @@ const Registro_Producto = () => {
             [name]: value
         }));
 
-        // Si cambia el campo imagen, actualizamos la preview
         if (name === "imagen") {
             setPreviewImg(value);
         }
     };
 
-    // ==================================
-    // ENVIAR PRODUCTO AL BACKEND
-    // ==================================
+    // ========  ENVIO DE FORMULARIO
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 

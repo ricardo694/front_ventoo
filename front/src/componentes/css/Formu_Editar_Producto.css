@@ -1,5 +1,5 @@
 .contenedor_formu_editar_producto{
-    width: 100%;
+    width: 60%;
     height: fit-content;
     min-width: 150px;
     min-height: 200px;
@@ -23,7 +23,7 @@
     width: 60%;
     min-width: 200px;
     object-fit: contain;
-    border-radius: 10px;
+    border-radius:10px;
 }
 
 .contenedor_formu_editar_producto > div:nth-of-type(1){
