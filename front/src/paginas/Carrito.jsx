@@ -29,7 +29,58 @@ const Carrito = () => {
             setVer_modal(false)  
         }
     }
+    const vaciarCarrito = async () => {
+        const res = await fetch("http://localhost:3001/vaciar_carrito", {
+            method: "DELETE",
+            credentials: "include"
+        });
 
+        const data = await res.json();
+
+        if (data.success) {
+            alert("Compra finalizada exitosamente");
+            setVer_modal(false); // cerrar modal
+            window.location.reload(); // recargar carrito
+        } else {
+            alert("Error al finalizar compra");
+        }
+    };
+
+    const finalizarCompra = async (direccion, metodoPago) => {
+
+    if (!direccion || !metodoPago) {
+        return alert("Debes completar todos los campos");
+    }
+
+    const res = await fetch("http://localhost:3001/crear_pedido", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            direccion,
+            metodoPago,
+            total: totalPago
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        alert("Pedido creado correctamente");
+
+        // Ahora sí vaciar carrito
+        await fetch("http://localhost:3001/vaciar_carrito", {
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        setVer_modal(false);
+        window.location.reload();
+
+    } else {
+        alert("Error al crear el pedido");
+    }
+};
     return(
         <div className="contenedor_perfil_cliente">
             <Encabezado/>
@@ -53,6 +104,8 @@ const Carrito = () => {
                 <Modal_Pago
                     Mostrar_Modal_Pago={Mostrar_Modal_Pago}
                     total={totalPago}
+                    vaciarCarrito={vaciarCarrito}
+                    finalizarCompra={finalizarCompra}
                 />
             )}
         </div>

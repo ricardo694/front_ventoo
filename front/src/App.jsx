@@ -23,11 +23,10 @@ const App = () => {
         <Route path="/Inicio_Sesion" element={<Inicio_Sesion />} />
         <Route path="/Registrarse" element={<Registro />} />
         <Route path="/Perfil_Cliente" element={<Perfil_Cliente />} />
-        <Route path="/Informacion_Pedido" element={<Info_Pedido />} />
+        <Route path="/Info_Pedido/:idPedido" element={<Info_Pedido />} />
         <Route path="/Carrito" element={<Carrito />} />
         <Route path="/Perfil_Vendedor" element={<Perfil_Vendedor />} />
         <Route path="/Registrar_Producto" element={<Registro_Producto />} />
-        <Route path="/Editar_Producto" element={<Editar_Producto />} />
         <Route path="/producto/Editar_Producto/:id" element={<Editar_Producto />} />
         <Route path="*" element={<Not_Found />} />
       </Routes>

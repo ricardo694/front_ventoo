@@ -1,5 +1,6 @@
-.contenedor_barra_busqueda{
+.contenedor_formu_resenas{
     width: 100%;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,31 +8,31 @@
     gap: 20px;
 }
 
-.contenedor_barra_busqueda > input{
+.contenedor_formu_resenas > input,
+.contenedor_formu_resenas > select{
     width: 100%;
     background-color: var(--color_4);
     font-size: 20px;
-    padding: 5px;
+    padding: 3px;
     border-radius: 10px;
     border: var(--border_1);
     filter: var(--sombra_2);
     outline: none;
 }
 
-.contenedor_barra_busqueda > button{
+.contenedor_formu_resenas > button{
     font-size: 25px;
     color: var(--color_4);
     background-color: var(--color_6);
     border: none;
     filter: var(--sombra_2);
-    padding: 5px 30px;
+    padding: 3px 40px;
     border-radius: 10px;
     cursor: pointer;
     transition: .3s;
-    margin-bottom: 30px;
 }
 
-.contenedor_barra_busqueda > button:hover{
+.contenedor_formu_resenas > button:hover{
     filter: none;
     transform: var(--tamano_1);
 }

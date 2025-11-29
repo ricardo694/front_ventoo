@@ -1,43 +1,42 @@
 import React from "react";
-import '../componentes/css/Productos_Vendedor.css'
+import '../componentes/css/Productos_Vendedor.css';
 import Tarjeta_Producto from "./Tarjeta_Producto";
+import { Link } from "react-router-dom";
 
-const Productos_Vendedor = ({productos, eliminarProducto}) => {
-    return(
+const Productos_Vendedor = ({ productos, eliminarProducto }) => {
+
+    if (!productos || productos.length === 0) {
+        return <p className="mensaje_no_productos">Aún no has registrado productos.</p>;
+    }
+
+    return (
         <div className="contenedor_productos_vendedor">
             <p>Tus Productos</p>
 
-            <div >
-                {productos.length > 0 ? (
-                    productos.map(producto => (
-                        <div key={producto.Id_producto} className="producto_vendedor_card">
+            <div>
+                {productos.map((producto) => (
+                    <div key={producto.Id_producto}>
+                        
+                        {/* Tarjeta del producto */}
+                        <Tarjeta_Producto
+                            producto={producto}
+                            ruta_tarjeta={`/producto/Editar_Producto/${producto.Id_producto}`}
 
-                            <img 
-                                src={producto.Imagen}
-                                alt={producto.Nombre}
-                                className="producto_vendedor_img"
-                            />
+                        />
 
-                            <h3>{producto.Nombre}</h3>
-                            <p>{producto.Descripcion}</p>
-                            <p>${producto.Precio}</p>
+                        {/* Botón eliminar */}
+                        <button
+                            onClick={() => eliminarProducto(producto.Id_producto)}
+                        >
+                            Eliminar
+                        </button>
 
-                            <button 
-                                className="btn_eliminar"
-                                onClick={() => eliminarProducto(producto.Id_producto)}
-                            >
-                                Eliminar
-                            </button>
-
-                        </div>
-                    ))
-                ) : (
-                    <p>No has registrado productos todavía</p>
-                )}
-                
+                    </div>
+                ))}
             </div>
-        </div>
-    )
-}
 
-export default Productos_Vendedor
+        </div>
+    );
+};
+
+export default Productos_Vendedor;

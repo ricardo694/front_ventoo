@@ -10,8 +10,8 @@ const Tarjeta_Producto = ({ producto, ruta_tarjeta }) => {
     // Detectar formato correcto de imagen
     const srcImagen =
         Imagen?.startsWith("data:image") ? Imagen :           // base64
-        Imagen?.startsWith("http") ? Imagen :                 // URL completa
-        `http://localhost:3001/uploads/${Imagen}`;            // archivo local
+        Imagen?.startsWith("http") ? Imagen :                 // URL 
+        `http://localhost:3001/uploads/${Imagen}`;            // 
 
     return (
         <div className="contenedor_tarjeta_producto">

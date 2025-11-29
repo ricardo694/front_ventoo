@@ -18,6 +18,22 @@ const Inicio = () => {
 
     //=====ESTADOS NECESARIOS
     const [productos, setProductos] = React.useState([]);
+    const [usuario, setUsuario] = React.useState(null);
+
+    //========VERIFICAR SI EL USUARIO ESTA LOGUEADO
+    useEffect(() => {
+    fetch("http://localhost:3001/usuario", {
+        credentials: "include"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            setUsuario(data.usuario); // Usuario logueado
+        } else {
+            setUsuario(null); // No logueado
+        }
+    });
+}, []);
 
     //=====OBTENER PRODUCTOS
     useEffect(() => {
@@ -37,14 +53,14 @@ const Inicio = () => {
     const getImageSrc = (img) => {
     if (!img) return "";
 
-    const trimmed = img.trim(); // <-- IMPORTANTE
+    const trimmed = img.trim();
 
     if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
-        return trimmed; // URL completa
+        return trimmed; 
     }
 
     if (trimmed.startsWith("data:image")) {
-        return trimmed; // Base64
+        return trimmed; 
     }
 
     return `http://localhost:3001/uploads/${trimmed}`;
@@ -61,9 +77,10 @@ const Inicio = () => {
 
 
     const info_tarjetas_inicio = [
+
         {
             id: 1,
-            ruta_tarjeta_inicio: "/Inicio_Sesion",
+            ruta_tarjeta_inicio: usuario ? "/Perfil_Cliente" : "/Inicio_Sesion",
             titulo: "Entra a tu cuenta",
             logo: img1
         },
@@ -108,7 +125,7 @@ const Inicio = () => {
                                 <Tarjeta_Producto
                                     key={p.Id_producto}
                                     producto={p}
-                                    ruta_tarjeta={p.Id_producto}
+                                    ruta_tarjeta={`/Info_Producto/${p.Id_producto}`}
                                 />
                             ))}
                         </div>

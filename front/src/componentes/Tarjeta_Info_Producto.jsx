@@ -53,48 +53,55 @@ const Tarjeta_Info_Producto = ({ producto }) => {
 
             
     return (
-        <div className="contenedor_tarjeta_info_producto">
-            <p>{producto.Nombre}</p>
+    <div className="contenedor_tarjeta_info_producto">
 
-            <div className="caja_info_producto_tarjeta_info_producto">
-                <img 
-                    src={imagenProducto}
-                    alt={producto.Nombre}
-                    onError={e => e.target.src = "https://via.placeholder.com/200"}
-                />
+
+        <p>{producto.Nombre}</p>
+
+ 
+        <div className="caja_info_producto_tarjeta_info_producto">
+
+
+            <img
+                src={imagenProducto}
+                alt={producto.Nombre}
+                onError={e => e.target.src = "https://via.placeholder.com/200"}
+            />
+
+
+            <div>
+
+                <p>{producto.Descripcion}</p>
+                <p>${producto.Precio}</p>
 
                 <div>
-                    <p>{producto.Descripcion}</p>
-                    <p>Cantidad disponible: 10</p>
-
                     <div>
-                        <p>${producto.Precio}</p>
-
-                        <div>
-                            <button onClick={() => setCantidad(c => Math.max(1, c - 1))}>-</button>
-                            <p>{cantidad}</p>
-                            <button onClick={() => setCantidad(c => c + 1)}>+</button>
-                        </div>
+                        <button onClick={() => setCantidad(c => Math.max(1, c - 1))}>-</button>
+                        <p>{cantidad}</p>
+                        <button onClick={() => setCantidad(c => c + 1)}>+</button>
                     </div>
 
                     <button onClick={() => agregarCarrito(producto.Id_producto, cantidad)}>
                         Agregar
                     </button>
-
                 </div>
-            </div>
 
-            {/* Información del vendedor */}
-            <div className="vendedor_box">
-                <img 
-                    src={fotoVendedor}
-                    alt="Foto del vendedor"
-                    onError={e => e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                />
-                <p>{producto.NombreVendedor || "Vendedor desconocido"}</p>
             </div>
         </div>
-    );
+
+
+        <div>
+            <img
+                src={fotoVendedor}
+                alt="Foto del vendedor"
+                onError={e => e.target.src = "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+            />
+            <p>{producto.NombreVendedor || "Vendedor desconocido"}</p>
+        </div>
+
+    </div>
+);
+
 };
 
 export default Tarjeta_Info_Producto;

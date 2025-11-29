@@ -14,6 +14,8 @@ const Perfil_Cliente = () => {
     const navigate = useNavigate();
     const [usuario, setUsuario] = useState(null);
     const [imagenPreview, setImagenPreview] = useState(null);
+    const [pedidos, setPedidos] = useState([]);
+
 
     //=====OBTENER USUARIO LOGUEADO
     useEffect(() => {
@@ -60,6 +62,23 @@ const Perfil_Cliente = () => {
             }));
         }
     };
+
+    //======OBTENER PEDIDOS DEL USUARIO
+    useEffect(() => {
+    const obtenerPedidos = async () => {
+        const res = await fetch("http://localhost:3001/pedidos_cliente", {
+            credentials: "include"
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            setPedidos(data.pedidos);
+        }
+    };
+
+    obtenerPedidos();
+    }, []);
 
 
     //=========CERRAR SESIÓN 
@@ -113,9 +132,19 @@ const Perfil_Cliente = () => {
                 <div className="caja_pedidos_cliente_perfil_cliente">
                     <p>Pedidos</p>
                     <div>
-                        <Pedidos_Cliente />
-                        <Pedidos_Cliente />
-                        <Pedidos_Cliente />
+                        {pedidos.length === 0 ? (
+                            <p className="sin_pedidos">No tienes pedidos aún</p>
+                        ) : (
+                            pedidos.map(p => (
+                                <Pedidos_Cliente
+                                    key={p.Id_pedido}
+                                    codigo={p.Id_pedido}
+                                    fecha={p.Fecha_pedido}
+                                    estado={p.Estado_pedido}
+                                    total={p.Total}
+                                />
+                            ))
+                        )}
                     </div>
                 </div>
             </div>

@@ -107,8 +107,6 @@ app.post('/subir_imagen', upload.single("imagen"), (req, res) => {
 });
 
 // ======================== FUNCIÓN PARA NORMALIZAR IMÁGENES====================================
-
-
 function normalizarImagen(imagen) {
     if (!imagen) return "";
 
@@ -180,7 +178,6 @@ app.post("/registrar_producto", (req, res) => {
     });
 });
 
-
 /* ===================== ELIMINAR PRODUCTO DEL VENDEDOR ===================== */
 app.delete("/eliminar_producto/:id", (req, res) => {
     if (!req.session.usuario) {
@@ -241,10 +238,9 @@ app.get("/producto_editar/:id", (req, res) => {
     const idUsuario = req.session.usuario.Id_usuario;
 
     const query = `
-        SELECT p.*, up.Cantidad
-        FROM Producto p
-        INNER JOIN Usuario_Producto up ON up.Id_producto = p.Id_producto
-        WHERE p.Id_producto = ? AND up.Id_usuario = ?
+        SELECT * 
+        FROM Producto
+        WHERE Id_producto = ? AND Id_usuario = ?
         LIMIT 1
     `;
 
@@ -262,59 +258,45 @@ app.get("/producto_editar/:id", (req, res) => {
 
 /* ===================== EDITAR PRODUCTO ===================== */
 app.put("/editar_producto/:id", (req, res) => {
+
     if (!req.session.usuario) {
-        return res.status(401).json({ success: false, message: "No autorizado" });
+        return res.status(401).json({ 
+            success: false, 
+            message: "No autorizado" 
+        });
     }
 
     const idProducto = req.params.id;
     const idUsuario = req.session.usuario.Id_usuario;
 
-    const { titulo, descripcion, precio, cantidad, imagen } = req.body;
-
+    const { titulo, descripcion, precio, imagen } = req.body;
     const imgLimpia = (imagen || "").trim();
 
-    // Verificar que el producto es suyo
-    const verificar = `
-        SELECT * FROM Usuario_Producto  
-        WHERE Id_usuario = ? AND Id_producto = ?
-    `;
-
-    db.query(verificar, [idUsuario, idProducto], (err, result) => {
-        if (err || result.length === 0) {
-            return res.status(403).json({
-                success: false,
-                message: "No puedes editar un producto que no es tuyo"
-            });
-        }
 
         // Actualizar producto
         const updateProducto = `
             UPDATE Producto 
-            SET Nombre = ?, Descripcion = ?, Precio = ?, Imagen = ? 
+            SET Nombre = ?, Descripcion = ?, Precio = ?, Imagen = ?
             WHERE Id_producto = ?
         `;
 
-        db.query(updateProducto, [titulo, descripcion, precio, imgLimpia, idProducto], err2 => {
-            if (err2) return res.status(500).json({ success: false });
-
-            // Actualizar cantidad en Usuario_Producto
-            const updateCantidad = `
-                UPDATE Usuario_Producto
-                SET Cantidad = ?
-                WHERE Id_producto = ? AND Id_usuario = ?
-            `;
-
-            db.query(updateCantidad, [cantidad, idProducto, idUsuario], err3 => {
-                if (err3) return res.status(500).json({ success: false });
+        db.query(
+            updateProducto,
+            [titulo, descripcion, precio, imgLimpia, idProducto],
+            (err2) => {
+                if (err2) {
+                    console.log(err2);
+                    return res.status(500).json({ success: false });
+                }
 
                 res.json({
                     success: true,
                     message: "Producto actualizado"
                 });
-            });
-        });
-    });
+            }
+        );
 });
+
 /* ===================== OBTENER CATEGORÍAS ===================== */
 app.get("/categorias", (req, res) => {
     db.query("SELECT * FROM Categoria ORDER BY Nombre_categoria", (err, results) => {
@@ -404,6 +386,7 @@ app.get("/productos_vendedor", (req, res) => {
         });
     });
 });
+
 // ================== AGREGAR AL CARRITO ==================
 app.post("/carrito/agregar", (req, res) => {
     const { Id_usuario, Id_producto, Cantidad } = req.body;
@@ -468,6 +451,26 @@ app.get("/carrito/:idUsuario", (req, res) => {
     });
 });
 
+/* ===================== VACIAR CARRITO ===================== */
+app.delete("/vaciar_carrito", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ success: false, message: "No autorizado" });
+    }
+
+    const idUsuario = req.session.usuario.Id_usuario;
+
+    const sql = `DELETE FROM Usuario_Producto WHERE Id_usuario = ?`;
+
+    db.query(sql, [idUsuario], (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ success: false, message: "Error al vaciar carrito" });
+        }
+
+        res.json({ success: true, message: "Carrito vaciado" });
+    });
+});
+
 //=============ELIMINAR PRODUCTO DEL CARRITO======
 app.delete("/carrito/eliminar/:idUsuario/:idProducto", (req, res) => {
     const { idUsuario, idProducto } = req.params;
@@ -479,6 +482,217 @@ app.delete("/carrito/eliminar/:idUsuario/:idProducto", (req, res) => {
 
     db.query(sql, [idUsuario, idProducto], (err) => {
         if (err) return res.json({ success: false });
+        res.json({ success: true });
+    });
+});
+
+//=============CREAR PEDIDO==============================
+app.post("/crear_pedido", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ success: false, message: "No autorizado" });
+    }
+
+    const idUsuario = req.session.usuario.Id_usuario;
+    const { direccion, metodoPago, total } = req.body;
+
+    const fecha = new Date().toISOString().slice(0, 10);
+
+    const sql = `
+        INSERT INTO Pedido (Id_pedido, Direccion_envio, Fecha_pedido, Metodo_pago, Estado_pedido, Total, Id_usuario)
+        VALUES (?, ?, ?, ?, 'Pendiente', ?, ?)
+    `;
+
+    const idPedido = Date.now(); // ID único rápido
+
+    db.query(sql, [idPedido, direccion, fecha, metodoPago, total, idUsuario], (err) => {
+        if (err) {
+            console.log(err);
+            return res.json({ success: false });
+        }
+
+        res.json({ success: true, idPedido });
+    });
+});
+
+// ===================== OBTENER PEDIDOS DEL CLIENTE =====================
+app.get("/pedidos_cliente", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ success: false, message: "No autorizado" });
+    }
+
+    const idUsuario = req.session.usuario.Id_usuario;
+
+    const sql = `
+        SELECT 
+            Id_pedido, 
+            Fecha_pedido, 
+            Total,
+            Estado_pedido
+        FROM Pedido
+        WHERE Id_usuario = ?
+        ORDER BY Fecha_pedido DESC
+    `;
+
+    db.query(sql, [idUsuario], (err, results) => {
+        if (err) return res.json({ success: false });
+        res.json({ success: true, pedidos: results });
+    });
+});
+
+//==================OBTENER PEDIDO + PRODUCTOS DEL PEDIDO===========
+app.get("/pedido/:idPedido", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({
+            success: false,
+            message: "No autorizado"
+        });
+    }
+
+    const idPedido = req.params.idPedido;
+    const idUsuario = req.session.usuario.Id_usuario;
+
+    //  Verificar que el pedido sea del usuario
+    const sqlPedido = `
+        SELECT * FROM Pedido 
+        WHERE Id_pedido = ? AND Id_usuario = ?
+    `;
+
+    db.query(sqlPedido, [idPedido, idUsuario], (err, pedidoResult) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Error al obtener pedido"
+            });
+        }
+
+        if (pedidoResult.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Pedido no encontrado o no es tuyo"
+            });
+        }
+
+        const pedido = pedidoResult[0];
+
+        // 2️ Obtener productos del pedido (unir con productos)
+        const sqlProductos = `
+            SELECT 
+                pd.Id_producto,
+                pd.Cantidad,
+                pd.Precio,
+                p.Nombre,
+                p.Descripcion,
+                p.Imagen
+            FROM Pedido_Detalle pd
+            INNER JOIN Producto p ON p.Id_producto = pd.Id_producto
+            WHERE pd.Id_pedido = ?
+        `;
+
+        db.query(sqlProductos, [idPedido], (err2, productosResult) => {
+            if (err2) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Error al cargar productos del pedido"
+                });
+            }
+
+            res.json({
+                success: true,
+                pedido,
+                productos: productosResult
+            });
+        });
+    });
+});
+//===============OBTENER RESEÑAS POR PRODUCTO====================
+app.get("/resenas/:idProducto", (req, res) => {
+    const idProducto = req.params.idProducto;
+
+    const sql = `
+        SELECT r.*, u.Nombre AS NombreUsuario, u.Imagen AS FotoUsuario
+        FROM Resena r
+        INNER JOIN Usuario u ON u.Id_usuario = r.Id_usuario
+        WHERE r.Id_producto = ?
+        ORDER BY r.Fecha_resena DESC
+    `;
+
+    db.query(sql, [idProducto], (err, result) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Error al cargar reseñas" });
+        }
+
+        res.json({
+            success: true,
+            resenas: result
+        });
+    });
+});
+//===============SUBIR RESEÑA======================
+app.post("/resena", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ success: false, message: "No autorizado" });
+    }
+
+    const { Id_producto, Comentario, Estrellas } = req.body;
+    const Id_usuario = req.session.usuario.Id_usuario;
+
+    const sql = `
+        INSERT INTO Resena (Id_producto, Id_usuario, Comentario, Estrellas)
+        VALUES (?, ?, ?, ?)
+    `;
+
+    db.query(sql, [Id_producto, Id_usuario, Comentario, Estrellas], (err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Error al subir reseña" });
+        }
+
+        res.json({ success: true });
+    });
+});
+//================EDITAR RESEÑA=======================
+app.put("/resena/:idResena", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ success: false, message: "No autorizado" });
+    }
+
+    const { idResena } = req.params;
+    const { Comentario, Estrellas } = req.body;
+    const idUsuario = req.session.usuario.Id_usuario;
+
+    const sql = `
+        UPDATE Resena
+        SET Comentario = ?, Estrellas = ?
+        WHERE Id_resena = ? AND Id_usuario = ?
+    `;
+
+    db.query(sql, [Comentario, Estrellas, idResena, idUsuario], (err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Error al editar reseña" });
+        }
+
+        res.json({ success: true });
+    });
+});
+
+//===============ELIMINAR RESEÑA===============
+app.delete("/resena/:idResena", (req, res) => {
+    if (!req.session.usuario) {
+        return res.status(401).json({ success: false, message: "No autorizado" });
+    }
+
+    const { idResena } = req.params;
+    const idUsuario = req.session.usuario.Id_usuario;
+
+    const sql = `
+        DELETE FROM Resena
+        WHERE Id_resena = ? AND Id_usuario = ?
+    `;
+
+    db.query(sql, [idResena, idUsuario], (err) => {
+        if (err) {
+            return res.status(500).json({ success: false, message: "Error al eliminar reseña" });
+        }
+
         res.json({ success: true });
     });
 });

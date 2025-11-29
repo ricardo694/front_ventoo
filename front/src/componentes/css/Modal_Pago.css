@@ -43,6 +43,7 @@
     font-size: 25px;
 }
 
+.contenedor_modal_pago > div > form > input,
 .contenedor_modal_pago > div > form > select{
     width: 100%;
     background-color: var(--color_4);

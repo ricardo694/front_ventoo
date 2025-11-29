@@ -7,7 +7,6 @@ const Formu_Editar_Producto = ({
     categorias,
     handleChange,
     handleSubmit,
-    handleCancel
 }) => {
     return (
         <form onSubmit={handleSubmit} className="contenedor_formu_editar_producto">
@@ -15,9 +14,8 @@ const Formu_Editar_Producto = ({
             <p>Producto</p>
 
             <img 
-                src={previewImg} 
+                src={previewImg || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                 alt="Vista previa"
-                onError={(e)=> e.target.src="https://cdn-icons-png.flaticon.com/512/149/149071.png"}
             />
 
             <div>
@@ -44,15 +42,6 @@ const Formu_Editar_Producto = ({
                     name="precio" 
                     value={formData.precio}
                     placeholder="Precio" 
-                    onChange={handleChange}
-                    required
-                />
-
-                <input 
-                    type="number" 
-                    name="cantidad" 
-                    value={formData.cantidad}
-                    placeholder="Cantidad" 
                     onChange={handleChange}
                     required
                 />

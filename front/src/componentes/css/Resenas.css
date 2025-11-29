@@ -1,0 +1,90 @@
+.contenedor_resenas{
+    width: 100%;
+    height: fit-content;
+    min-width: 150px;
+    min-height: 150px;
+    background-color: var(--color_4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    border: var(--border_1);
+    filter: var(--sombra_2);
+}
+
+.contenedor_resenas > div:first-of-type{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: var(--border_1);
+
+    font-size: 20px;
+}
+
+.contenedor_resenas > div:first-of-type > :last-child{
+    color: var(--color_6);
+    font-size: 25px;
+}
+
+.contenedor_resenas > p{
+    width: 100%;
+    font-size: 20px;
+}
+
+.contenedor_resenas > div:last-of-type{
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 20px;
+}
+
+.contenedor_resenas > div:last-of-type > button:first-of-type{
+    font-size: 20px;
+    color: black;
+    background-color: var(--color_7);
+    border: none;
+    filter: var(--sombra_2);
+    padding: 5px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.contenedor_resenas > div:last-of-type > button:last-of-type{
+    font-size: 20px;
+    color: white;
+    background-color: var(--color_6);
+    border: none;
+    filter: var(--sombra_2);
+    padding: 5px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.contenedor_resenas > div:last-of-type > button:hover{
+    filter: none;
+    transform: var(--tamano_1);
+}
+
+.caja_editar_resena{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.caja_editar_resena > input,
+.caja_editar_resena > select{
+    width: 100%;
+    background-color: var(--color_4);
+    font-size: 20px;
+    padding: 3px;
+    border-radius: 10px;
+    border: var(--border_1);
+    outline: none;
+}

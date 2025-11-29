@@ -1,28 +1,39 @@
 import React from "react";
 import '../componentes/css/Filtros_Busqueda.css'
 
-const Filtros_Busqueda = () => {
-    return(
+const Filtros_Busqueda = ({
+    categorias,
+    categoria,
+    setCategoria,
+    precio,
+    setPrecio,
+    onFiltrar
+}) => {
+    return (
         <div className="contenedor_filtros_busqueda">
-            <form action="">
-                <input type="search" />
-
-                <button type="submit">Buscar</button>
-            </form>
-
-            <form action="">
-                <select name="" id="">
-                    <option value="" hidden>Precio</option>
+            <form onSubmit={(e)=>{e.preventDefault(); onFiltrar();}}>
+                
+                {/* PRECIO */}
+                <select value={precio} onChange={(e)=>setPrecio(e.target.value)}>
+                    <option value="">Precio</option>
+                    <option value="1">Menor a Mayor</option>
+                    <option value="2">Mayor a Menor</option>
                 </select>
 
-                <select name="" id="">
-                    <option value="" hidden>Categoria</option>
+                {/* CATEGORIA */}
+                <select value={categoria} onChange={(e)=>setCategoria(e.target.value)}>
+                    <option value="">Categoría</option>
+                    {categorias.map(c => (
+                        <option key={c.Id_categoria} value={c.Id_categoria}>
+                            {c.Nombre_categoria}
+                        </option>
+                    ))}
                 </select>
 
-                <button>Filtrar</button>
+                <button type="submit">Filtrar</button>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default Filtros_Busqueda
+export default Filtros_Busqueda;

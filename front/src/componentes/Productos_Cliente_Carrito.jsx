@@ -31,66 +31,91 @@ const Productos_Cliente_Carrito = ({ Mostrar_Modal_Pago, setTotalPago }) => {
     };
 
     const total = carrito.reduce((acc, item) => acc + item.Precio * item.Cantidad, 0);
+    const finalizarCompra = async () => {
+        const res = await fetch("http://localhost:3001/vaciar_carrito", {
+            method: "DELETE",
+            credentials: "include"
+        });
 
-    return (
-    <div className="contenedor_productos_cliente_carrito">
-        <p>Carrito</p>
+        const data = await res.json();
 
-        <div className="caja_productos_productos_cliente_carrito">
-            
-            {/* === LISTA DE PRODUCTOS O MENSAJE DE VACÍO === */}
-            <div>
-                {carrito.length === 0 ? (
-                    <p className="mensaje_carrito_vacio">
-                        No has añadido nada al carrito
-                    </p>
-                ) : (
-                    carrito.map(item => (
-                        <div key={item.Id_producto}>
-                            <Tarjeta_Producto
-                                producto={item}
-                                texto_tarjeta="Ver"
-                                ruta_tarjeta={item.Id_producto}
+        if (data.success) {
+            setCarrito([]); // Vaciar carrito en el estado
+            alert("Compra finalizada. ¡Gracias!");
+        } else {
+            alert("No se pudo finalizar la compra");
+        }
+    };
+  return (
+        <div className="contenedor_productos_cliente_carrito">
+            <p>Carrito</p>
+
+            {/* CAJA PRINCIPAL */}
+            <div className="caja_productos_productos_cliente_carrito">
+
+                {/* LISTA */}
+                <div>
+                    {carrito.length === 0 ? (
+                        <p className="mensaje_carrito_vacio">
+                            No has añadido nada al carrito
+                        </p>
+                    ) : (
+                        carrito.map(item => (
+                            <div key={item.Id_producto} className="producto_carrito">
+                                
+                                <Tarjeta_Producto
+                                    producto={item}
+                                    texto_tarjeta="Ver"
+                                    ruta_tarjeta={`/Info_Producto/${item.Id_producto}`}
+                                />
+
+                                <div className="cantidad_carrito_box">
+                                    <p>Cantidad: {item.Cantidad}</p>
+                                    <p>Subtotal: ${(item.Precio * item.Cantidad).toLocaleString()}</p>
+                                </div>
+
+                                <button onClick={() => eliminarProducto(item.Id_producto)}>
+                                    Eliminar
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {/* ACEPTAR CONDICIONES + TOTAL */}
+                {carrito.length > 0 && (
+                    <>
+                        <div>
+                            <input
+                                id="aceptar_condiciones"
+                                type="checkbox"
+                                checked={aceptar_permiso}
+                                onChange={e => setAceptar_permiso(e.target.checked)}
                             />
-
-                            <button onClick={() => eliminarProducto(item.Id_producto)}>
-                                Eliminar
-                            </button>
+                            <label htmlFor="aceptar_condiciones">
+                                ¿Aceptas que no puedes cancelar el pedido?
+                            </label>
                         </div>
-                    ))
+
+                        <p className="total_pagar">
+                            Total: ${total.toLocaleString()}
+                        </p>
+                    </>
                 )}
+
             </div>
 
-            {/* === SOLO MOSTRAR ESTOS SI HAY PRODUCTOS === */}
+            {/* BOTÓN FUERA DE LA CAJA (CSS MATCHING) */}
             {carrito.length > 0 && (
-                <>
-                    <div>
-                        <input
-                            id="aceptar_condiciones"
-                            type="checkbox"
-                            checked={aceptar_permiso}
-                            onChange={e => setAceptar_permiso(e.target.checked)}
-                        />
-                        <label htmlFor="aceptar_condiciones">
-                            ¿Aceptas que no puedes cancelar el pedido?
-                        </label>
-                    </div>
-
-                    <p className="total_pagar">
-                        Total: ${total.toLocaleString()}
-                    </p>
-
-                    <button
-                        className={aceptar_permiso ? "" : "boton_desactivado"}
-                        onClick={aceptar_permiso ? Mostrar_Modal_Pago : null}
-                    >
-                        Comprar
-                    </button>
-                </>
+                <button
+                    className={aceptar_permiso ? "" : "boton_desactivado"}
+                    onClick={aceptar_permiso ? Mostrar_Modal_Pago : null}
+                >
+                    Comprar
+                </button>
             )}
         </div>
-    </div>
-)
+    );
 }
 
 export default Productos_Cliente_Carrito;
