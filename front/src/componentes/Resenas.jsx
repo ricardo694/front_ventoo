@@ -1,85 +1,53 @@
 import React, { useState } from "react";
-import '../componentes/css/Resenas.css'
-import { useNavigate } from "react-router-dom";
+import '../componentes/css/Resenas.css';
 
-const Resenas = ({ resena, onUpdate, onDelete }) => {
+const Resenas = ({ resena, onSave, onCancel, onDelete, usuarioActual }) => {
 
     const [modoEditar, setModoEditar] = useState(false);
     const [nuevoTexto, setNuevoTexto] = useState(resena.Comentario);
     const [nuevasEstrellas, setNuevasEstrellas] = useState(resena.Estrellas);
 
+    const esPropietario =
+        usuarioActual && usuarioActual.Id_usuario === resena.Id_usuario;
 
-       const guardarCambios = async () => {
-        if (!usuario) {
-            alert("Debes iniciar sesión.");
-            return;
-        }
-        const res = await fetch(`http://localhost:3001/resena/${resena.Id_resena}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",  
-            body: JSON.stringify({
-                Comentario: nuevoTexto,
-                Estrellas: nuevasEstrellas
-            })
-        });
+    const iniciarEdicion = () => setModoEditar(true);
 
-        const data = await res.json();
-
-        if (data.success) {
-            onUpdate();  // recarga reseñas
-            setModoEditar(false);
-        }
+    const cancelar = () => {
+        setModoEditar(false);
+        setNuevoTexto(resena.Comentario);
+        setNuevasEstrellas(resena.Estrellas);
+        if (onCancel) onCancel();
     };
 
-    const Cancelar_Edicion = () => {
-        if (confirm("¿Quiere dejar de editar?")) {
-            setModoEditar(false);
-            setNuevoTexto(resena.Comentario);
-            setNuevasEstrellas(resena.Estrellas);
-        }
+    const guardar = () => {
+        onSave(resena.Id_resena, nuevoTexto, nuevasEstrellas);
+        setModoEditar(false);
     };
-
-    const eliminarResena = async (idResena) => {
-    if (!confirm("¿Seguro que quieres eliminar esta reseña?")) return;
-
-    const res = await fetch(`http://localhost:3001/resena/${idResena}`, {
-        method: "DELETE",
-        credentials: "include"
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-        cargarResenas();
-    }
-    }  ;
 
     return (
         <div className="contenedor_resenas">
-            
-            {/* Usuario y estrellas */}
+
+            {/* === PRIMER DIV (arriba) — usuario y estrellas/acciones === */}
             <div>
                 <p>{resena.NombreUsuario}</p>
+
                 <p>
-                    {"★".repeat(resena.Estrellas)}
-                    {"☆".repeat(5 - resena.Estrellas)}
+                    {/* Aquí NO van botones porque el CSS marca este <p> solo para texto */}
                 </p>
             </div>
 
-
-            {/* Texto o edición */}
-            { !modoEditar ? (
+            {/* === TEXTO O EDICIÓN === */}
+            {!modoEditar ? (
                 <p>{resena.Comentario}</p>
             ) : (
                 <div className="caja_editar_resena">
-                    <input 
+                    <input
                         type="text"
                         value={nuevoTexto}
                         onChange={(e) => setNuevoTexto(e.target.value)}
                     />
 
-                    <select 
+                    <select
                         value={nuevasEstrellas}
                         onChange={(e) => setNuevasEstrellas(Number(e.target.value))}
                     >
@@ -92,20 +60,22 @@ const Resenas = ({ resena, onUpdate, onDelete }) => {
                 </div>
             )}
 
-
-            {/* Botones */}
-            {!modoEditar ? (
+            {/* === ÚLTIMO DIV (abajo) — botones === */}
+            {esPropietario && (
                 <div>
-                    <button onClick={() => setModoEditar(true)}>Editar</button>
-                    <button onClick={() => onDelete(resena.Id_resena)}>Eliminar</button>
-                </div>
-            ) : (
-                <div>
-                    <button onClick={guardarCambios}>Guardar</button>
-                    <button onClick={Cancelar_Edicion}>Cancelar</button>
+                    {!modoEditar ? (
+                        <>
+                            <button onClick={iniciarEdicion}>Editar</button>
+                            <button onClick={() => onDelete(resena.Id_resena)}>Eliminar</button>
+                        </>
+                    ) : (
+                        <>
+                            <button onClick={guardar}>Guardar</button>
+                            <button onClick={cancelar}>Cancelar</button>
+                        </>
+                    )}
                 </div>
             )}
-
         </div>
     );
 };

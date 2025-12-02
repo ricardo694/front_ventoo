@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import Encabezado from "../componentes/Encabezado";
@@ -17,12 +17,14 @@ import Footer from "../componentes/Footer";
 const Inicio = () => {
 
     //=====ESTADOS NECESARIOS
-    const [productos, setProductos] = React.useState([]);
-    const [usuario, setUsuario] = React.useState(null);
+    const [productos, setProductos] = useState([]);
+    const [usuario, setUsuario] = useState(null);
+    const [productosFiltrados, setProductosFiltrados] = useState([]);
+    const [busqueda, setBusqueda] = useState("");
 
     //========VERIFICAR SI EL USUARIO ESTA LOGUEADO
     useEffect(() => {
-    fetch("http://localhost:3001/usuario", {
+    fetch("http://localhost:3001/usuario_loguedo", {
         credentials: "include"
     })
     .then(res => res.json())
@@ -42,7 +44,8 @@ const Inicio = () => {
             const data = await res.json();
 
             if (data.success) {
-                setProductos(data.productos.slice(0, 3)); // SOLO 3 PARA INICIO
+                setProductos(data.productos); 
+                setProductosFiltrados(data.productos); 
             }
         };
 
@@ -66,6 +69,24 @@ const Inicio = () => {
     return `http://localhost:3001/uploads/${trimmed}`;
 };
 
+// ======================
+    // FILTRAR SEGÚN PARÁMETROS
+    // ======================
+    const filtrarProductos = () => {
+    const texto = busqueda.toLowerCase();
+
+    const filtrados = productos.filter(p =>
+        p.Nombre.toLowerCase().includes(texto)
+    );
+
+    setProductosFiltrados(filtrados);
+    };
+    const productosParaMostrar = busqueda.trim() === ""
+    ? productosFiltrados.slice(0, 3)
+    : productosFiltrados;
+
+
+
     //=====AOS
     useEffect(() => {
         AOS.init({
@@ -77,11 +98,10 @@ const Inicio = () => {
 
 
     const info_tarjetas_inicio = [
-
         {
             id: 1,
             ruta_tarjeta_inicio: usuario ? "/Perfil_Cliente" : "/Inicio_Sesion",
-            titulo: "Entra a tu cuenta",
+            titulo: usuario ? "Ir a tu perfil" : "Inicia sesión",
             logo: img1
         },
         {
@@ -92,8 +112,8 @@ const Inicio = () => {
         },
         {
             id: 3,
-            ruta_tarjeta_inicio: "/Inicio_Sesion",
-            titulo: "Vende tu mismo",
+            ruta_tarjeta_inicio: usuario ? "/Productos_Vendedor" : "/Inicio_Sesion",
+            titulo: usuario ? "Vende tus productos" : "Vende tu mismo",
             logo: img3
         }
     ];
@@ -107,6 +127,7 @@ const Inicio = () => {
                 <div className="caja_tarjetas_inicio_inicio">
                     {info_tarjetas_inicio.map((t) => (
                         <Tarjeta_Inicio
+                            key={t.id}
                             ruta_tarjeta_inicio={t.ruta_tarjeta_inicio}
                             titulo={t.titulo}
                             logo={t.logo}
@@ -116,20 +137,32 @@ const Inicio = () => {
 
                 <div className="caja_barra_busqueda_inicio">
                     <p>¡Descubre tu mismo!</p>
-                    <Barra_Busqueda/>
+                    {/* BARRA DE BÚSQUEDA */}
+                    <Barra_Busqueda 
+                        busqueda={busqueda}
+                        setBusqueda={setBusqueda}
+                        onBuscar={filtrarProductos}
+                    />
                 </div>
 
                 <div className="caja_productos_inicio">
                     <div>
-                            {productos.map(p => (
+                        {productosParaMostrar.length === 0 ? (
+                            <p>No se encontraron productos.</p>
+                        ) : (
+                            productosParaMostrar.map(p => (
                                 <Tarjeta_Producto
                                     key={p.Id_producto}
                                     producto={p}
                                     ruta_tarjeta={`/Info_Producto/${p.Id_producto}`}
                                 />
-                            ))}
-                        </div>
-                    <Link to={'/Compra'}>Encuentra mas {'>>'}</Link>
+                            ))
+                        )}
+                    </div>
+
+                    {busqueda.trim() === "" && (
+                        <Link to={'/Compra'}>Encuentra más {'>>'}</Link>
+                    )}
                 </div>
             </div>
 

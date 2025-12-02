@@ -72,7 +72,7 @@ CREATE TABLE Pedido (
 -- ==============================
 --     USUARIO_PRODUCTO (Carrito)
 -- ==============================
-CREATE TABLE Usuario_Producto (
+CREATE TABLE Carrito (
     Id_usuario INT(6) NOT NULL,
     Id_producto INT(6) NOT NULL,
     Fecha_agregado DATE NOT NULL,

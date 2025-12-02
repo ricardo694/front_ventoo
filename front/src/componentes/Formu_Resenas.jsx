@@ -1,40 +1,12 @@
 import React,{useState} from "react";
 import '../componentes/css/Formu_Resenas.css'
 
-const Formu_Resenas = ({ idProducto, onUpload }) => {
-
-    const [texto, setTexto] = useState("");
-    const [estrellas, setEstrellas] = useState(5);
-
-    const enviar = async (e) => {
-        e.preventDefault();
-
-        const res = await fetch("http://localhost:3001/resena", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({
-                Id_producto: idProducto,
-                Comentario: texto,
-                Estrellas: estrellas
-
-                
+const Formu_Resenas =({ texto, estrellas, setTexto, setEstrellas, onSubmit }) => {
 
 
-            })
-
-        });
-
-        const data = await res.json();
-        if (data.success) {
-            onUpload();
-            setTexto("");
-            setEstrellas(5);
-        }
-    };
 
     return (
-        <form className="contenedor_formu_resenas" onSubmit={enviar}>
+        <form className="contenedor_formu_resenas" onSubmit={onSubmit}>
             <input 
                 type="text" 
                 placeholder="Escribe una reseña"

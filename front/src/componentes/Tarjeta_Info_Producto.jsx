@@ -15,6 +15,11 @@ const Tarjeta_Info_Producto = ({ producto }) => {
             return;
         }
 
+        if (usuario.Tipo_cliente === "Vendedor") {
+            alert("Debes ser cliente para poder comprar productos.");
+            return;
+        }
+
         const res = await fetch("http://localhost:3001/carrito/agregar", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

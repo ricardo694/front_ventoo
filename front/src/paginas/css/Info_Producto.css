@@ -52,3 +52,20 @@
     filter: var(--sombra_2);
     
 }
+.promedio_resenas {
+    text-align: center;
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.promedio_numero {
+    font-size: 39px;
+    font-weight: bold;
+}
+
+.promedio_estrellas {
+    font-size: 30px;
+    color: #d32f2f; 
+}

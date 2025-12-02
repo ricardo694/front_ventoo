@@ -16,6 +16,9 @@ const Info_Producto = () => {
     const [producto, setProducto] = useState(null);
     const [masDelVendedor, setMasDelVendedor] = useState([]);
     const [resenas, setResenas] = useState([]);
+    const [texto, setTexto] = useState("");
+    const [estrellas, setEstrellas] = useState(5);
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
     //=====AOS
     useEffect(() => {
         AOS.init({
@@ -39,6 +42,76 @@ const Info_Producto = () => {
                 }
             });
     }, [id]);
+
+
+    //=====ENVIAR RESEÑA
+    const enviar = async (e) => {
+        e.preventDefault();
+
+        const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+        if (!usuario) {
+            alert("Debes iniciar sesión para subir una reseña");
+            return;
+        }
+
+        try {
+            const res = await fetch("http://localhost:3001/resena", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({
+                    Id_producto: id,   // <--- ESTE ERA EL ERROR
+                    Comentario: texto,
+                    Estrellas: estrellas
+                })
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                cargarResenas();  // <--- ESTE ES EL CORRECTO
+                setTexto("");
+                setEstrellas(5);
+            } else {
+                alert("Error: no se pudo subir la reseña");
+            }
+
+        } catch (error) {
+            console.error("Error enviando reseña:", error);
+            alert("Error en el servidor");
+        }
+        };
+    
+        //=====ACTUALIZAR RESEÑA
+        const actualizarResena = async (idResena, nuevoTexto, nuevasEstrellas) => {
+
+    const usuario = JSON.parse(localStorage.getItem("usuario") || "null");
+    if (!usuario) {
+        alert("Debes iniciar sesión.");
+        return;
+    }
+
+    try {
+        const res = await fetch(`http://localhost:3001/resena/${idResena}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({
+                Comentario: nuevoTexto,
+                Estrellas: nuevasEstrellas
+            })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            cargarResenas(); 
+        }
+
+    } catch (error) {
+        console.error("Error al actualizar reseña:", error);
+    }
+};
 
       //=========OBTENER RESEÑAS POR PRODUCTO
     const cargarResenas = () => {
@@ -78,6 +151,14 @@ const Info_Producto = () => {
             alert("Error al eliminar reseña");
         }
     };
+    // === Calcular promedio de estrellas ===
+    const promedioEstrellas = resenas.length > 0 
+        ? (resenas.reduce((acc, r) => acc + r.Estrellas, 0) / resenas.length).toFixed(1)
+        : 0;
+
+    // === Convertir promedio a estrellas visuales ===
+    const estrellasLlenas = Math.floor(promedioEstrellas);
+    const estrellasVacias = 5 - estrellasLlenas;
 
     return(
         <div className="contenedor_info_tarjeta">
@@ -93,14 +174,38 @@ const Info_Producto = () => {
 
                 <div className="caja_resenas">
                     <h3>Reseñas</h3>
+                   
+                    <Formu_Resenas 
+                        texto={texto}
+                        estrellas={estrellas}
+                        setTexto={setTexto}
+                        setEstrellas={setEstrellas}
+                        onSubmit={enviar}
+                    />
 
-                    <Formu_Resenas idProducto={id} onUpload={cargarResenas} />
+                     {/* Promedio general */}
+                    <div className="promedio_resenas">
+                        <p className="promedio_numero">{promedioEstrellas}</p>
+
+                        <p className="promedio_estrellas">
+                            {"★".repeat(estrellasLlenas)}
+                            {"☆".repeat(estrellasVacias)}
+                        </p>
+                    </div>
+
                     <div>
                         {resenas.length === 0 ? (
                             <p>No hay reseñas todavía.</p>
                         ) : (
                             resenas.map(r => (
-                                <Resenas key={r.Id_resena} resena={r} onUpdate={cargarResenas} onDelete={eliminarResena}/>
+                                <Resenas 
+                                    key={r.Id_resena} 
+                                    resena={r}
+                                    onSave={actualizarResena}
+                                    onCancel={() => {}}
+                                    onDelete={eliminarResena}
+                                    usuarioActual={usuario} 
+                                />
                             ))
                         )}
                     </div>

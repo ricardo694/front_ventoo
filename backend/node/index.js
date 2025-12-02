@@ -189,8 +189,7 @@ app.delete("/eliminar_producto/:id", (req, res) => {
 
     // Primero verificar que el producto pertenece al usuario
     const verificar = `
-        SELECT * FROM Usuario_Producto 
-        WHERE Id_usuario = ? AND Id_producto = ?
+        DELETE FROM Carrito WHERE Id_producto = ?
     `;
 
     db.query(verificar, [idUsuario, idProducto], (err, result) => {
@@ -398,7 +397,7 @@ app.post("/carrito/agregar", (req, res) => {
 
     // ¿Ya existe el producto en el carrito?
     const buscar = `
-        SELECT * FROM Usuario_Producto 
+        SELECT * FROM Carrito
         WHERE Id_usuario = ? AND Id_producto = ?
     `;
 
@@ -408,7 +407,7 @@ app.post("/carrito/agregar", (req, res) => {
         if (result.length > 0) {
             // Ya existe → actualizar cantidad
             const actualizar = `
-                UPDATE Usuario_Producto 
+                 UPDATE Carrito
                 SET Cantidad = Cantidad + ?
                 WHERE Id_usuario = ? AND Id_producto = ?
             `;
@@ -421,7 +420,7 @@ app.post("/carrito/agregar", (req, res) => {
         } else {
             // No existe → insertar
             const insertar = `
-                INSERT INTO Usuario_Producto (Id_usuario, Id_producto, Fecha_agregado, Cantidad)
+                INSERT INTO Carrito (Id_usuario, Id_producto, Fecha_agregado, Cantidad)
                 VALUES (?, ?, ?, ?)
             `;
 
@@ -438,11 +437,11 @@ app.get("/carrito/:idUsuario", (req, res) => {
     const { idUsuario } = req.params;
 
     const query = `
-        SELECT up.Cantidad,
-               p.Id_producto, p.Nombre, p.Precio, p.Imagen, p.Descripcion
-        FROM Usuario_Producto up
-        INNER JOIN Producto p ON p.Id_producto = up.Id_producto
-        WHERE up.Id_usuario = ?
+        SELECT c.Cantidad,
+            p.Id_producto, p.Nombre, p.Precio, p.Imagen, p.Descripcion
+        FROM Carrito c
+        INNER JOIN Producto p ON p.Id_producto = c.Id_producto
+        WHERE c.Id_usuario = ?
     `;
 
     db.query(query, [idUsuario], (err, results) => {
@@ -459,7 +458,8 @@ app.delete("/vaciar_carrito", (req, res) => {
 
     const idUsuario = req.session.usuario.Id_usuario;
 
-    const sql = `DELETE FROM Usuario_Producto WHERE Id_usuario = ?`;
+    const sql = `DELETE FROM Carrito WHERE Id_usuario = ?`;
+
 
     db.query(sql, [idUsuario], (err, result) => {
         if (err) {
@@ -476,7 +476,7 @@ app.delete("/carrito/eliminar/:idUsuario/:idProducto", (req, res) => {
     const { idUsuario, idProducto } = req.params;
 
     const sql = `
-        DELETE FROM Usuario_Producto
+        DELETE FROM Carrito
         WHERE Id_usuario = ? AND Id_producto = ?
     `;
 
