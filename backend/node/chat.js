@@ -28,10 +28,10 @@ function preguntar() {
             console.log("Agente:", data.respuesta);
 
         } catch (e) {
-            console.log("❌ Error comunicándose con el servidor:", e.message);
+            console.log(" Error comunicándose con el servidor:", e.message);
         }
 
-        preguntar(); // siguiente ronda
+        preguntar(); 
     });
 }
 

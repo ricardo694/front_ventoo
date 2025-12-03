@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agent import run_agent
-from database import query 
+from database import query
+import unicodedata
 
 app = FastAPI()
 
@@ -18,15 +19,27 @@ app.add_middleware(
 class ChatRequest(BaseModel):
     message: str
 
+def normalizar(texto):
+    return ''.join(
+        c for c in unicodedata.normalize('NFD', texto)
+        if unicodedata.category(c) != 'Mn'
+    ).lower()
+
 @app.post("/chat")
-async def chat_endpoint(body: dict):
-    mensaje = body["message"].lower()
+async def chat_endpoint(body: ChatRequest):
+    mensaje = normalizar(body.message)
     datos = None
+
+    # Palabras clave normalizadas
+    kw_productos_comprados = ["productos mas comprados", "mas vendidos"]
+    kw_mas_resenas = ["productos con mas comentarios", "mas resenas"]
+    kw_mejor_calificados = ["mejor calificados", "mejores calificaciones"]
+    kw_vendedor_publicaciones = ["vendedor con mas productos", "mas publicaciones"]
 
     # ---------------------------
     # INTENCIÓN: productos más comprados
     # ---------------------------
-    if "productos más comprados" in mensaje or "más vendidos" in mensaje:
+    if any(k in mensaje for k in kw_productos_comprados):
         datos = query("""
             SELECT p.Nombre, SUM(pd.Cantidad) AS total_vendidos
             FROM Pedido_Detalle pd
@@ -39,11 +52,11 @@ async def chat_endpoint(body: dict):
     # ---------------------------
     # INTENCIÓN: productos con más reseñas
     # ---------------------------
-    elif "productos con más comentarios" in mensaje or "más reseñas" in mensaje:
+    elif any(k in mensaje for k in kw_mas_resenas):
         datos = query("""
             SELECT p.Nombre, COUNT(r.Id_resena) AS total_resenas
             FROM Resena r
-            INNER JOIN Producto p ON r.Id_producto = p.Id_producto
+            INNER INNER JOIN Producto p ON r.Id_producto = p.Id_producto
             GROUP BY p.Id_producto
             ORDER BY total_resenas DESC
             LIMIT 5;
@@ -52,7 +65,7 @@ async def chat_endpoint(body: dict):
     # ---------------------------
     # INTENCIÓN: productos mejor calificados
     # ---------------------------
-    elif "mejor calificados" in mensaje or "mejores calificaciones" in mensaje:
+    elif any(k in mensaje for k in kw_mejor_calificados):
         datos = query("""
             SELECT p.Nombre, AVG(r.Estrellas) AS promedio_calificacion
             FROM Resena r
@@ -65,7 +78,7 @@ async def chat_endpoint(body: dict):
     # ---------------------------
     # INTENCIÓN: vendedor con más publicaciones
     # ---------------------------
-    elif "vendedor con más productos" in mensaje or "más publicaciones" in mensaje:
+    elif any(k in mensaje for k in kw_vendedor_publicaciones):
         datos = query("""
             SELECT u.Nombre, COUNT(p.Id_producto) AS productos_publicados
             FROM Usuario u
@@ -76,8 +89,14 @@ async def chat_endpoint(body: dict):
         """)
 
     # ---------------------------
-    # Aquí ejecutamos el agente
+    # Si la BD no devolvió nada
     # ---------------------------
-    respuesta = run_agent(body["message"], datos_bd=datos)
+    if not datos:
+        datos = None
+
+    # ---------------------------
+    # Ejecutar el agente
+    # ---------------------------
+    respuesta = run_agent(body.message, datos_bd=datos)
 
     return {"respuesta": respuesta}

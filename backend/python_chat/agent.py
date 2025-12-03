@@ -3,21 +3,27 @@ import json
 from datetime import datetime
 
 class Agente:
-    def __init__(self, model="llama3.1", max_history=10):
+    def __init__(self, model="gemma3:4b", max_history=10):
         self.model = model
         self.conversation_history = []
         self.max_history = max_history
         self.topics_proposed = []
         self.system_prompt = """
             Eres mi agente conversacional inteligente y amigable.
-            Tu objetivo es  responder preguntas sobre productos, vendedores, comentarios,
-            calificaciones y tendencias de compra con el usuario.
+            Tu objetivo es responder preguntas sobre productos, vendedores, comentarios,
+            calificaciones y tendencias de compra usando los datos REALMENTE proporcionados por la base de datos.
+
+            REGLA IMPORTANTE:
+            Si recibes una sección llamada "Estos son los datos obtenidos de la base de datos:",
+            usa ÚNICAMENTE esos datos para responder. No inventes información.
+            Si no hay datos proporcionados, indica que no hay información disponible.
+            SI NO HAY DATOS DE LA BASE DE DATOS → RESPONDE:
+            "No hay información disponible en este momento."
+
             Habilidades:
             - Mantener conversaciones naturales y fluidas
-            - Profundizar en temas complejos
             - Ser curioso y hacer preguntas relevantes
             - Adaptarte al estilo del usuario
-
 
             Responde siempre en español de forma natural y conversacional.
         """
@@ -96,7 +102,7 @@ Resumen de la conversación:
     # ====================================================
 # FUNCIÓN para ser usada desde FastAPI
 # ====================================================
-agente_global = Agente(model="llama3.1")
+agente_global = Agente(model="gemma3:4b")
 
 def run_agent(mensaje_usuario, datos_bd=None):
     """
@@ -112,7 +118,7 @@ def run_agent(mensaje_usuario, datos_bd=None):
 # ====================================================
 def main():
     print("Iniciando agente")
-    agent = Agente(model="llama3.1")
+    agent = Agente(model="gemma3:4b")
 
     print("Pille el tema inicial:\n")
     initial_topic = agent.propose_topic()
