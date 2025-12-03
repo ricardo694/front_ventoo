@@ -77,20 +77,30 @@ const Tarjeta_Info_Producto = ({ producto }) => {
             <div>
 
                 <p>{producto.Descripcion}</p>
-                <p>${producto.Precio}</p>
+                
 
                 <div>
+                    <p>${producto.Precio}</p>
+
                     <div>
-                        <button onClick={() => setCantidad(c => Math.max(1, c - 1))}>-</button>
+                        <button onClick={() => setCantidad(c => Math.max(1, c - 1))}>-
+
+                        </button>
+
                         <p>{cantidad}</p>
-                        <button onClick={() => setCantidad(c => c + 1)}>+</button>
+
+                        <button onClick={() => setCantidad(c => c + 1)}>+
+                        </button>
                     </div>
+                </div>
+
+                <div>
 
                     <button onClick={() => agregarCarrito(producto.Id_producto, cantidad)}>
                         Agregar
                     </button>
+                
                 </div>
-
             </div>
         </div>
 

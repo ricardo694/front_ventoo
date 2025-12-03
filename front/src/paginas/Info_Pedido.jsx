@@ -5,6 +5,7 @@ import "aos/dist/aos.css";
 import Encabezado from "../componentes/Encabezado";
 import Footer from "../componentes/Footer";
 import Info_Pedido_Cliente from "../componentes/Info_Pedido_Cliente";
+import Bot from '../componentes/Bot';
 
 const Info_Pedido = () => {
     //========ESTADOS NECESARIOS
@@ -49,7 +50,7 @@ const Info_Pedido = () => {
                 productos={productos}
                 />
             </div>
-
+            <Bot/>
             <Footer/>
         </div>
     )

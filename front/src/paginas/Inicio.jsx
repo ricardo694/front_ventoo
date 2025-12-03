@@ -13,6 +13,7 @@ import Barra_Busqueda from "../componentes/Barra_Busqueda";
 import Tarjeta_Producto from "../componentes/Tarjeta_Producto";
 import { Link } from "react-router-dom";
 import Footer from "../componentes/Footer";
+import Bot from '../componentes/Bot';
 
 const Inicio = () => {
 
@@ -165,6 +166,7 @@ const Inicio = () => {
                     )}
                 </div>
             </div>
+            <Bot/>
 
             <Footer/>
         </div>

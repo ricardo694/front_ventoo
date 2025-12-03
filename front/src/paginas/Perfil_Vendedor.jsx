@@ -7,6 +7,7 @@ import Encabezado_Usuarios from "../componentes/Encabezado_Usuarios";
 import Productos_Vendedor from "../componentes/Productos_Vendedor";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import Bot from '../componentes/Bot';
 
 const Perfil_Vendedor = () => {
 
@@ -164,7 +165,7 @@ const Perfil_Vendedor = () => {
                     eliminarProducto={eliminarProducto}
                 />
             </div>
-
+            <Bot/>
             <Footer/>
         </div>
     )

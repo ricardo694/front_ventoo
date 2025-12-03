@@ -9,6 +9,7 @@ import Tarjeta_Info_Producto from "../componentes/Tarjeta_Info_Producto";
 import Mas_Del_Vendedor from "../componentes/Mas_Del_Vendedor";
 import Formu_Resenas from "../componentes/Formu_Resenas";
 import Resenas from "../componentes/Resenas";
+import Bot from '../componentes/Bot';
 const Info_Producto = () => {
 
     //====ESTADOS NECESARIOS
@@ -170,10 +171,11 @@ const Info_Producto = () => {
                 <div>
                     <Tarjeta_Info_Producto producto={producto} />
                     <Mas_Del_Vendedor productos={masDelVendedor} />
-                </div>
+
+                <h3>Reseñas</h3>
 
                 <div className="caja_resenas">
-                    <h3>Reseñas</h3>
+                    
                    
                     <Formu_Resenas 
                         texto={texto}
@@ -184,16 +186,15 @@ const Info_Producto = () => {
                     />
 
                      {/* Promedio general */}
-                    <div className="promedio_resenas">
-                        <p className="promedio_numero">{promedioEstrellas}</p>
+                    <div>
+                        <p >{promedioEstrellas}</p>
 
-                        <p className="promedio_estrellas">
+                        <p >
                             {"★".repeat(estrellasLlenas)}
                             {"☆".repeat(estrellasVacias)}
                         </p>
                     </div>
 
-                    <div>
                         {resenas.length === 0 ? (
                             <p>No hay reseñas todavía.</p>
                         ) : (
@@ -211,7 +212,7 @@ const Info_Producto = () => {
                     </div>
                 </div>
             </div>
-
+            <Bot/>
             <Footer/>
         </div>
     )

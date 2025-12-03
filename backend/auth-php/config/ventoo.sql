@@ -22,22 +22,6 @@ CREATE TABLE Usuario (
     Imagen VARCHAR(255) DEFAULT 'default.png',
     PRIMARY KEY (Id_usuario)
 );
--- ==============================
---            PEDIDO-DETALLE ()
--- ==============================
-CREATE TABLE Pedido_Detalle (
-    Id_detalle INT AUTO_INCREMENT PRIMARY KEY,
-    Id_pedido INT(6) NOT NULL,
-    Id_producto INT(6) NOT NULL,
-    Cantidad INT(10) NOT NULL,
-    Precio DECIMAL(10,2) NOT NULL,
-
-    FOREIGN KEY (Id_pedido) REFERENCES Pedido(Id_pedido)
-        ON DELETE CASCADE ON UPDATE CASCADE,
-
-    FOREIGN KEY (Id_producto) REFERENCES Producto(Id_producto)
-        ON DELETE CASCADE ON UPDATE CASCADE
-);
 
 
 -- ==============================
@@ -68,16 +52,32 @@ CREATE TABLE Pedido (
     Id_usuario INT(6) NOT NULL,
     PRIMARY KEY (Id_pedido)
 );
+-- ==============================
+--            PEDIDO-DETALLE ()
+-- ==============================
+CREATE TABLE Pedido_Detalle (
+    Id_detalle INT AUTO_INCREMENT PRIMARY KEY,
+    Id_pedido INT(6) NOT NULL,
+    Id_producto INT(6) NOT NULL,
+    Cantidad INT(10) NOT NULL,
+    Precio DECIMAL(10,2) NOT NULL,
+
+    FOREIGN KEY (Id_pedido) REFERENCES Pedido(Id_pedido)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+
+    FOREIGN KEY (Id_producto) REFERENCES Producto(Id_producto)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 -- ==============================
---     USUARIO_PRODUCTO (Carrito)
+--      Carrito
 -- ==============================
 CREATE TABLE Carrito (
+    Id_carrito INT(6) AUTO_INCREMENT PRIMARY KEY,
     Id_usuario INT(6) NOT NULL,
     Id_producto INT(6) NOT NULL,
     Fecha_agregado DATE NOT NULL,
-    Cantidad INT(10) NOT NULL,
-    PRIMARY KEY (Id_usuario, Id_producto)
+    Cantidad INT(10) NOT NULL
 );
 -- ==============================
 --     RESEÑAS
@@ -114,14 +114,14 @@ ADD CONSTRAINT fk_pedido_usuario
     ON DELETE CASCADE 
     ON UPDATE CASCADE;
 
-ALTER TABLE Usuario_Producto 
+ALTER TABLE Carrito
 ADD CONSTRAINT fk_usuarioproducto_usuario 
     FOREIGN KEY (Id_usuario) 
     REFERENCES Usuario (Id_usuario)
     ON DELETE CASCADE 
     ON UPDATE CASCADE;
 
-ALTER TABLE Usuario_Producto 
+ALTER TABLE Carrito 
 ADD CONSTRAINT fk_usuarioproducto_producto 
     FOREIGN KEY (Id_producto) 
     REFERENCES Producto (Id_producto)

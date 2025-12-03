@@ -7,6 +7,7 @@ import Footer from "../componentes/Footer";
 import Pedidos_Cliente from "../componentes/Pedidos_Cliente";
 import Encabezado_Usuarios from "../componentes/Encabezado_Usuarios";
 import { useNavigate } from "react-router-dom";
+import Bot from '../componentes/Bot';
 
 const Perfil_Cliente = () => {
 
@@ -148,6 +149,7 @@ const Perfil_Cliente = () => {
                     </div>
                 </div>
             </div>
+            <Bot/>
 
             <Footer />
 

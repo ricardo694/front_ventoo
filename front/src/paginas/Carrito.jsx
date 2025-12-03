@@ -5,7 +5,7 @@ import Encabezado from "../componentes/Encabezado";
 import Footer from "../componentes/Footer";
 import Productos_Cliente_Carrito from "../componentes/Productos_Cliente_Carrito";
 import Modal_Pago from "../componentes/Modal_Pago";
-
+import Bot from '../componentes/Bot';
 const Carrito = () => {
 
     useEffect(() => {
@@ -93,7 +93,7 @@ const Carrito = () => {
                 />
                 
             </div>
-
+            <Bot/>
             <Footer/>
 
             {ver_modal === false ?

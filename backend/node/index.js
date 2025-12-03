@@ -178,6 +178,7 @@ app.post("/registrar_producto", (req, res) => {
     });
 });
 
+
 /* ===================== ELIMINAR PRODUCTO DEL VENDEDOR ===================== */
 app.delete("/eliminar_producto/:id", (req, res) => {
     if (!req.session.usuario) {
@@ -187,12 +188,13 @@ app.delete("/eliminar_producto/:id", (req, res) => {
     const idProducto = req.params.id;
     const idUsuario = req.session.usuario.Id_usuario;
 
-    // Primero verificar que el producto pertenece al usuario
+    // 1. Verificar que el producto pertenece al usuario
     const verificar = `
-        DELETE FROM Carrito WHERE Id_producto = ?
+        SELECT * FROM Producto 
+        WHERE Id_producto = ? AND Id_usuario = ?
     `;
 
-    db.query(verificar, [idUsuario, idProducto], (err, result) => {
+    db.query(verificar, [idProducto, idUsuario], (err, result) => {
         if (err) return res.status(500).json({ success: false });
 
         if (result.length === 0) {
@@ -202,23 +204,23 @@ app.delete("/eliminar_producto/:id", (req, res) => {
             });
         }
 
-        // Eliminar relación usuario-producto
-        const eliminarRelacion = `
-            DELETE FROM Usuario_Producto WHERE Id_producto = ?
+        // 2. Eliminar del carrito de todos los usuarios
+        const eliminarCarrito = `
+            DELETE FROM Carrito WHERE Id_producto = ?
         `;
 
-        db.query(eliminarRelacion, [idProducto], err2 => {
+        db.query(eliminarCarrito, [idProducto], (err2) => {
             if (err2) return res.status(500).json({ success: false });
 
-            // Eliminar producto
+            // 3. Eliminar el producto
             const eliminarProducto = `
                 DELETE FROM Producto WHERE Id_producto = ?
             `;
 
-            db.query(eliminarProducto, [idProducto], err3 => {
+            db.query(eliminarProducto, [idProducto], (err3) => {
                 if (err3) return res.status(500).json({ success: false });
 
-                return res.json({
+                res.json({
                     success: true,
                     message: "Producto eliminado correctamente"
                 });

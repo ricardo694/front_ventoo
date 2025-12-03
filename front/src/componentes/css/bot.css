@@ -1,0 +1,22 @@
+.bot-container{
+    width: 150px;
+    height: 150px;
+    border: 2px solid #153B40;
+    position: fixed;
+    bottom: 20px;
+    right: 100px;
+    z-index: 100;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #82BFC7;
+    cursor: pointer;
+}
+
+.bot-container>img{
+    width: 80%;
+    height: 80%;
+    object-fit: cover;
+}

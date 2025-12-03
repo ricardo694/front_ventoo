@@ -6,6 +6,7 @@ import Encabezado from "../componentes/Encabezado";
 import Footer from "../componentes/Footer";
 import Formu_Registrar_Producto from "../componentes/Formu_Registrar_Producto";
 import { Link, useNavigate  } from "react-router-dom";
+import Bot from '../componentes/Bot';
 
 const Registro_Producto = () => {
     
@@ -122,7 +123,7 @@ const Registro_Producto = () => {
                     />
                 </div>
             </div>
-
+            <Bot/>
             <Footer />
         </div>
     );
