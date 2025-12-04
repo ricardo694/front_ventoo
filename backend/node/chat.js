@@ -11,11 +11,6 @@ console.log("💬 Chat con el agente IA (escribe 'salir' para terminar)");
 
 function preguntar() {
     rl.question("Tú: ", async (mensaje) => {
-        if (mensaje.toLowerCase() === "salir") {
-            console.log("👋 Hasta luego!");
-            rl.close();
-            return;
-        }
 
         try {
             const res = await fetch("http://localhost:8000/chat", {

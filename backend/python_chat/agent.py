@@ -13,12 +13,17 @@ class Agente:
             Tu objetivo es responder preguntas sobre productos, vendedores, comentarios,
             calificaciones y tendencias de compra usando los datos REALMENTE proporcionados por la base de datos.
 
+            INTERPRETACIÓN DE PREGUNTAS:
+            El usuario puede escribir su duda con cualquier tipo de estructura, sinónimos,
+            errores de ortografía, lenguaje informal, o frases ambiguas.
+            Tu tarea es intentar entender la INTENCIÓN REAL detrás de la pregunta usando sentido común.
+            
             REGLA IMPORTANTE:
-            Si recibes una sección llamada "Estos son los datos obtenidos de la base de datos:",
-            usa ÚNICAMENTE esos datos para responder. No inventes información.
-            Si no hay datos proporcionados, indica que no hay información disponible.
-            SI NO HAY DATOS DE LA BASE DE DATOS → RESPONDE:
+            SIEMPRE debes responder ÚNICAMENTE con los datos proporcionados.
+            SI NO recibes datos de la base de datos, DEBES responder literalmente:
             "No hay información disponible en este momento."
+
+            No inventes nombres de productos, vendedores, calificaciones ni reseñas.
 
             Habilidades:
             - Mantener conversaciones naturales y fluidas
@@ -71,7 +76,7 @@ class Agente:
                 return f"Error al comunicarse con Ollama: {str(e)}"
 
     # -----------------------------------------
-    # Proponer tema (placeholder)
+    # Proponer tema 
     # -----------------------------------------
     def propose_topic(self):
         return "¿Sobre qué producto, vendedor o categoría quieres hablar hoy?"
@@ -99,7 +104,7 @@ Resumen de la conversación:
         self.conversation_history = []
         print("Reiniciando...")
 
-    # ====================================================
+# ====================================================
 # FUNCIÓN para ser usada desde FastAPI
 # ====================================================
 agente_global = Agente(model="gemma3:4b")
@@ -113,51 +118,4 @@ def run_agent(mensaje_usuario, datos_bd=None):
     return respuesta
 
 
-# ====================================================
-# MAIN
-# ====================================================
-def main():
-    print("Iniciando agente")
-    agent = Agente(model="gemma3:4b")
 
-    print("Pille el tema inicial:\n")
-    initial_topic = agent.propose_topic()
-    print(f"Agente:\n{initial_topic}")
-
-    while True:
-        try:
-            user_input = input("Yo: ").strip()
-            if not user_input:
-                continue
-
-            if user_input.lower() == "salir":
-                print("Suerte")
-                break
-
-            elif user_input.lower() == "proponer":
-                print("Pille el tema:\n")
-                topic = agent.propose_topic()
-                print(f"Agente:\n{topic}")
-
-            elif user_input.lower() == "resumen":
-                print(agent.get_conversation_summary())
-
-            elif user_input.lower() == "reiniciar":
-                agent.reset_conversation()
-                print("Agente: Otra vez iniciamos")
-
-            else:
-                print("Agente: ", end="", flush=True)
-                response = agent.chat(user_input)
-                print(response)
-
-        except KeyboardInterrupt:
-            print("\nVemos perro")
-            break
-
-        except Exception as e:
-            print(f"Error: {str(e)}")
-
-
-if __name__ == "__main__":
-    main()

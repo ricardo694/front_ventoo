@@ -497,22 +497,37 @@ app.post("/crear_pedido", (req, res) => {
     const idUsuario = req.session.usuario.Id_usuario;
     const { direccion, metodoPago, total } = req.body;
 
+    // Validación básica
+    if (!direccion || !metodoPago || !total) {
+        return res.status(400).json({ 
+            success: false, 
+            message: "Faltan datos requeridos" 
+        });
+    }
+
     const fecha = new Date().toISOString().slice(0, 10);
 
     const sql = `
-        INSERT INTO Pedido (Id_pedido, Direccion_envio, Fecha_pedido, Metodo_pago, Estado_pedido, Total, Id_usuario)
-        VALUES (?, ?, ?, ?, 'Pendiente', ?, ?)
+        INSERT INTO Pedido (Direccion_envio, Fecha_pedido, Metodo_pago, Estado_pedido, Total, Id_usuario)
+        VALUES (?, ?, ?, 'Pendiente', ?, ?)
     `;
 
-    const idPedido = Date.now(); // ID único rápido
-
-    db.query(sql, [idPedido, direccion, fecha, metodoPago, total, idUsuario], (err) => {
+    db.query(sql, [direccion, fecha, metodoPago, total, idUsuario], (err, result) => {
         if (err) {
-            console.log(err);
-            return res.json({ success: false });
+            console.error("Error al crear pedido:", err);
+            return res.status(500).json({ 
+                success: false, 
+                message: "Error al crear el pedido" 
+            });
         }
 
-        res.json({ success: true, idPedido });
+        const idPedido = result.insertId;
+
+        res.json({ 
+            success: true, 
+            idPedido,
+            message: "Pedido creado exitosamente"
+        });
     });
 });
 

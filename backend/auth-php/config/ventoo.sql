@@ -154,6 +154,9 @@ INSERT INTO Categoria (Nombre_categoria) VALUES
 ('Oficina'),
 ('Salud'),
 ('Arte y Manualidades');
-
-
-
+            SELECT Producto.Nombre, AVG(Resena.Estrellas) AS promedio_calificacion
+            FROM Resena 
+            INNER JOIN Producto  ON Resena.Id_producto = Producto.Id_producto
+            GROUP BY Producto.Id_producto
+            ORDER BY promedio_calificacion DESC
+            LIMIT 5;
